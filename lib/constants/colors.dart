@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-/**
- * Contains Theme Colors
- */
+/// Contains Theme Colors
 
 ThemeData myTheme = ThemeData(
   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
