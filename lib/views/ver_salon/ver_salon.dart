@@ -1,15 +1,17 @@
 import 'package:checadordeprofesores/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 
+import '../../models/salon_model.dart';
+
 class VerSalon extends StatelessWidget {
   const VerSalon({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Map<String, dynamic> args =
-    //     ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-    // String salon = args['salon'];
-    String salon = '404';
+    Map<String, dynamic> mapa =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    String salon = mapa['salon'];
+    Salon objeto = mapa['objeto'];
 
     return Scaffold(
       appBar: getAppBar('Salon $salon', [], context),

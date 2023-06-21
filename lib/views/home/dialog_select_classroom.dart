@@ -1,4 +1,5 @@
 import 'package:another_flushbar/flushbar.dart';
+import 'package:checadordeprofesores/controllers/salon_controller.dart';
 import 'package:flutter/material.dart';
 
 AlertDialog launchDialogToSelectClassroom(context) {
@@ -65,8 +66,11 @@ AlertDialog launchDialogToSelectClassroom(context) {
           ),
         ),
         onPressed: () {
-          if (controller.text.isNotEmpty) {
-            Navigator.of(context).pop(controller.text);
+          if (SalonController().obtenerSalon(controller.text) != null) {
+            Navigator.of(context).pop({
+              'salon': controller.text,
+              'objeto': SalonController().obtenerSalon(controller.text),
+            });
           } else {
             Flushbar(
               message: 'AULA VACÍA',

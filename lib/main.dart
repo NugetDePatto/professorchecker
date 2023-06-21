@@ -11,9 +11,7 @@ Future<void> main() async {
   Hive.registerAdapter<Horario>(HorarioAdapter());
   Hive.registerAdapter<Salon>(SalonAdapter());
 
-  await Hive.openBox<Salon>('salones').then((value) {
-    // SalonController().addAll(salonesMapa);
-  });
+  await Hive.openBox<Salon>('salones');
 
   runApp(const MyApp());
 }

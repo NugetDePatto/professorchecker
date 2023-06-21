@@ -91,13 +91,13 @@ class HomePage extends StatelessWidget {
                         context,
                         '/ver_salon',
                         arguments: {
-                          'salon': value.toString(),
+                          'salon': value['salon'],
+                          'objeto': value['objeto'],
                         },
                       );
                     }
                   },
                 );
-                // launchDialogToSelectClassroom(context);
               },
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
