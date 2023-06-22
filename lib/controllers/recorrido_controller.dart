@@ -105,7 +105,7 @@ class RecorridoController {
     imagenController.iniciar();
 
     //metodo para tomar imagen y crear la ruta
-    File? imagen = await imagenController.tomar(e);
+    File? imagen = await imagenController.tomar(''); //aqui iba el e
 
     if (imagen != null) {
       Horario h = horario(e);
