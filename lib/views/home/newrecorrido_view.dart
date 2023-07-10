@@ -27,6 +27,7 @@ class _NewRecorridoViewState extends State<NewRecorridoView> {
   @override
   void initState() {
     super.initState();
+    recoC.iniciar();
     controller.selectIndex(0);
   }
 
@@ -36,7 +37,7 @@ class _NewRecorridoViewState extends State<NewRecorridoView> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text('Hora: ${recoC.horaRecorridoActual}'),
+        title: Text('Hora: ${recoC.horaActual}'),
         titleTextStyle: const TextStyle(
           fontSize: 40,
           fontWeight: FontWeight.bold,
@@ -44,10 +45,17 @@ class _NewRecorridoViewState extends State<NewRecorridoView> {
         ),
         centerTitle: true,
         toolbarHeight: 200,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back),
+          color: Colors.white,
+          iconSize: 40,
+        ),
       ),
       body: Column(
         children: [
-          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: GroupButton(
@@ -90,15 +98,14 @@ class _NewRecorridoViewState extends State<NewRecorridoView> {
             ),
           ),
           const SizedBox(height: 20),
-          Text(recoC.diaActual.toString()),
           Expanded(
             child: SizedBox(
               child: PageView.builder(
                 itemCount: bloques.length,
                 controller: pageController,
                 itemBuilder: (context, indexBloques) {
-                  var bloque = calendario[recoC.diaActual - 1]
-                      [recoC.horaRecorridoActual][bloques[indexBloques]];
+                  var bloque = calendario[recoC.diaActual - 1][recoC.horaActual]
+                      [bloques[indexBloques]];
                   List<String> salonesOrdenados =
                       bloque == null ? [] : bloque.keys.toList()
                         ..sort();

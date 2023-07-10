@@ -15,6 +15,7 @@ class NewCustomListTile extends StatefulWidget {
 class _NewCustomListTileState extends State<NewCustomListTile> {
   NewRecorridoController recC = NewRecorridoController();
   File? imagen;
+  bool asistio = false;
 
   @override
   void initState() {
@@ -48,6 +49,7 @@ class _NewCustomListTileState extends State<NewCustomListTile> {
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
@@ -59,11 +61,14 @@ class _NewCustomListTileState extends State<NewCustomListTile> {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        widget.e['titular'].toString().replaceRange(0, 6, ''),
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
+                      Expanded(
+                        child: Text(
+                          widget.e['titular'].toString().replaceRange(0, 6, ''),
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -91,11 +96,14 @@ class _NewCustomListTileState extends State<NewCustomListTile> {
                   ),
                   Row(
                     children: [
-                      Text(
-                        widget.e['materia'] + ' / ' + widget.e['grupo'],
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
+                      Expanded(
+                        child: Text(
+                          widget.e['materia'] + ' / ' + widget.e['grupo'],
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow.visible,
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -242,8 +250,12 @@ class _NewCustomListTileState extends State<NewCustomListTile> {
             scale: 2.5,
             child: Checkbox(
               fillColor: MaterialStateProperty.all(Colors.blueAccent),
-              value: false,
-              onChanged: (value) {},
+              value: asistio,
+              onChanged: (value) {
+                setState(() {
+                  asistio = value!;
+                });
+              },
             ),
           ),
           const SizedBox(width: 50),

@@ -1,17 +1,15 @@
 import 'package:checadordeprofesores/constants/colors.dart';
 import 'package:checadordeprofesores/constants/routes.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'models/horario_model.dart';
-import 'models/salon_model.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
-  await Hive.initFlutter();
+  WidgetsFlutterBinding.ensureInitialized();
 
-  Hive.registerAdapter<Horario>(HorarioAdapter());
-  Hive.registerAdapter<Salon>(SalonAdapter());
-
-  await Hive.openBox<Salon>('salones');
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(const MyApp());
 }

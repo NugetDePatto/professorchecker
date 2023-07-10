@@ -19,6 +19,7 @@ PreferredSizeWidget getAppBar(String title, List<Widget> actions, context) {
     iconTheme: const IconThemeData(
       size: 60,
     ),
+    leadingWidth: 100,
     actions: actions,
   );
 }
