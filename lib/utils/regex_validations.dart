@@ -1,3 +1,0 @@
-/**
- * regex validations
- */

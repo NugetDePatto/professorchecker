@@ -1,14 +1,18 @@
-import 'package:checadordeprofesores/controllers/nrerecorrido_controller.dart';
+import 'package:checadordeprofesores/utils/responsive_utils.dart';
 import 'package:checadordeprofesores/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var d = dis(context);
     return Scaffold(
-      appBar: getAppBar('ASISTENCIA UAT', [], context),
+      appBar: getAppBar(
+          'ASISTENCIA UAT ${GetStorage('informacion').read('codigo')}',
+          context),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -17,47 +21,25 @@ class HomePage extends StatelessWidget {
             children: [
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(500, 200),
+                  minimumSize: Size(500, d ? 150 : 100),
                 ),
                 onPressed: () async {
-                  NewRecorridoController controller = NewRecorridoController();
-                  showDialog(
-                    context: context,
-                    builder: (context) => FutureBuilder(
-                      future: controller.iniciar(),
-                      builder:
-                          (BuildContext context, AsyncSnapshot<void> snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else {
-                          Navigator.of(context)
-                              .pop(); // Cerrar el diálogo de carga
-                          return const Text('');
-                        }
-                      },
-                    ),
-                  ).then((value) {
-                    Navigator.pushNamed(
-                      context,
-                      '/prueba',
-                      arguments: controller,
-                    );
-                  });
+                  Navigator.pushNamed(context, '/recorrido');
                 },
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.directions_run, size: 40),
-                    SizedBox(
+                    Icon(Icons.directions_run, size: d ? 60 : 40),
+                    const SizedBox(
                       width: 8,
                     ),
-                    Text(
-                      'Iniciar Recorrido',
-                      style: TextStyle(
-                        fontSize: 40,
+                    Expanded(
+                      child: Text(
+                        'Iniciar Recorrido',
+                        style: TextStyle(
+                          fontSize: d ? 40 : 30,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ],
@@ -68,7 +50,36 @@ class HomePage extends StatelessWidget {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(500, 200),
+                  minimumSize: Size(500, d ? 150 : 100),
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/asistencia');
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.location_on, size: d ? 60 : 40),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    Expanded(
+                      child: Text(
+                        'Asistencia Individual',
+                        style: TextStyle(
+                          fontSize: d ? 40 : 30,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(500, d ? 150 : 100),
                 ),
                 onPressed: () {
                   Navigator.pushNamed(
@@ -76,17 +87,20 @@ class HomePage extends StatelessWidget {
                     '/agenda',
                   );
                 },
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.person, size: 40),
-                    SizedBox(
+                    Icon(Icons.person, size: d ? 60 : 40),
+                    const SizedBox(
                       width: 8,
                     ),
-                    Text(
-                      'Agenda Profesores',
-                      style: TextStyle(
-                        fontSize: 40,
+                    Expanded(
+                      child: Text(
+                        'Profesores',
+                        style: TextStyle(
+                          fontSize: d ? 40 : 30,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ],

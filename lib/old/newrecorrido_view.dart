@@ -1,8 +1,10 @@
-import 'package:checadordeprofesores/constants/bloques.dart';
-import 'package:checadordeprofesores/controllers/nrerecorrido_controller.dart';
-import 'package:checadordeprofesores/widgets/NewCustomListTile.dart';
+import 'package:checadordeprofesores/controllers/rerecorrido_controller.dart';
+import 'package:checadordeprofesores/old/NewCustomListTile.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:group_button/group_button.dart';
+
+import '../utils/date_utils.dart';
 
 class NewRecorridoView extends StatefulWidget {
   const NewRecorridoView({super.key});
@@ -12,9 +14,10 @@ class NewRecorridoView extends StatefulWidget {
 }
 
 class _NewRecorridoViewState extends State<NewRecorridoView> {
-  NewRecorridoController recoC = NewRecorridoController();
+  RecorridoControlador recoC = RecorridoControlador();
   GroupButtonController controller = GroupButtonController();
   PageController pageController = PageController();
+  List<dynamic> calendario = GetStorage('calendario').read('calendario');
 
   List<String> bloques = [
     'A',
@@ -27,7 +30,7 @@ class _NewRecorridoViewState extends State<NewRecorridoView> {
   @override
   void initState() {
     super.initState();
-    recoC.iniciar();
+    // recoC.iniciar();
     controller.selectIndex(0);
   }
 
@@ -37,7 +40,7 @@ class _NewRecorridoViewState extends State<NewRecorridoView> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text('Hora: ${recoC.horaActual}'),
+        title: Text('Hora: $horarioActual'),
         titleTextStyle: const TextStyle(
           fontSize: 40,
           fontWeight: FontWeight.bold,
@@ -104,7 +107,7 @@ class _NewRecorridoViewState extends State<NewRecorridoView> {
                 itemCount: bloques.length,
                 controller: pageController,
                 itemBuilder: (context, indexBloques) {
-                  var bloque = calendario[recoC.diaActual - 1][recoC.horaActual]
+                  var bloque = calendario[diaActual - 1][horarioActual]
                       [bloques[indexBloques]];
                   List<String> salonesOrdenados =
                       bloque == null ? [] : bloque.keys.toList()
@@ -114,7 +117,7 @@ class _NewRecorridoViewState extends State<NewRecorridoView> {
                       return bloque != null
                           ? NewCustomListTile(
                               e: bloque[salonesOrdenados[index]],
-                              salon: salonesOrdenados[index])
+                            )
                           : Container();
                     },
                     itemCount: bloque == null ? 0 : bloque.length,

@@ -1,19 +1,18 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 
-import '../controllers/nrerecorrido_controller.dart';
+import '../controllers/rerecorrido_controller.dart';
 
 class NewCustomListTile extends StatefulWidget {
   final Map<String, dynamic> e;
-  final String salon;
-  const NewCustomListTile({super.key, required this.e, required this.salon});
+  const NewCustomListTile({super.key, required this.e});
 
   @override
   State<NewCustomListTile> createState() => _NewCustomListTileState();
 }
 
 class _NewCustomListTileState extends State<NewCustomListTile> {
-  NewRecorridoController recC = NewRecorridoController();
+  RecorridoControlador recC = RecorridoControlador();
   File? imagen;
   bool asistio = false;
 
@@ -42,7 +41,7 @@ class _NewCustomListTileState extends State<NewCustomListTile> {
             ),
             child: Center(
               child: Text(
-                widget.salon,
+                widget.e['aula'].toString().split('-')[1],
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 25,
@@ -199,50 +198,51 @@ class _NewCustomListTileState extends State<NewCustomListTile> {
           const SizedBox(width: 30),
           Column(
             children: [
-              recC.imagen == null
-                  ? SizedBox(
-                      height: 90,
-                      width: 90,
-                      child: IconButton(
-                        iconSize: 50,
-                        onPressed: () async {
-                          await recC.guardarImagen(widget.e);
-                          setState(() {});
-                        },
-                        icon: const Icon(
-                          Icons.camera_alt_rounded,
-                          color: Colors.tealAccent,
-                        ),
-                      ),
-                    )
-                  : GestureDetector(
-                      onTap: () async {
-                        // await Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) =>
-                        //         ImageViewer(entry: widget.entry),
-                        //   ),
-                        // );
-                        setState(() {});
-                      },
-                      child: Container(
-                        height: 90,
-                        width: 90,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.tealAccent,
-                            width: 3,
-                          ),
-                          image: DecorationImage(
-                            image: FileImage(
-                              recC.imagen!,
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
+              // recC.imagen == null
+              //     ? SizedBox(
+              //         height: 90,
+              //         width: 90,
+              //         child: IconButton(
+              //           iconSize: 50,
+              //           onPressed: () async {
+              //             await recC.tomarImagen(widget.e);
+              //             setState(() {});
+              //           },
+              //           icon: const Icon(
+              //             Icons.camera_alt_rounded,
+              //             color: Colors.tealAccent,
+              //           ),
+              //         ),
+              //       )
+              //     :
+              GestureDetector(
+                onTap: () async {
+                  // await Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) =>
+                  //         ImageViewer(entry: widget.entry),
+                  //   ),
+                  // );
+                  setState(() {});
+                },
+                child: Container(
+                  height: 90,
+                  width: 90,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.tealAccent,
+                      width: 3,
                     ),
+                    // image: DecorationImage(
+                    //   image: FileImage(
+                    //     recC.imagen!,
+                    //   ),
+                    //   fit: BoxFit.cover,
+                    // ),
+                  ),
+                ),
+              ),
             ],
           ),
           const SizedBox(width: 30),

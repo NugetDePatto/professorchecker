@@ -1,4 +1,4 @@
-List<Map<String, dynamic>> calendario = [
+List<Map<String, dynamic>> _calendario = [
   {
     "11:00 - 12:00": {
       "A": {

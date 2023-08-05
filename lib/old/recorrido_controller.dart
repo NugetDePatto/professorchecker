@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:checadordeprofesores/controllers/imagen_controller.dart';
 import 'package:hive/hive.dart';
 
-import '../models/horario_model.dart';
-import '../models/salon_model.dart';
+import 'horario_model.dart';
+import 'salon_model.dart';
 
 class RecorridoController {
   Box<Salon> salonesBox = Hive.box<Salon>('salones');

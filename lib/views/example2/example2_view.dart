@@ -1,4 +1,0 @@
-
-/**
- * create widgetPage to view
- */

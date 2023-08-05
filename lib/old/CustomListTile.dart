@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import '../controllers/recorrido_controller.dart';
-import '../views/home/imagen_view.dart';
+import 'recorrido_controller.dart';
+import 'imagen_view.dart';
 
 class CustomListTile extends StatefulWidget {
   final MapEntry<String, dynamic> entry;

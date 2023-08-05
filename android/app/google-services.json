@@ -30,6 +30,49 @@
             {
               "client_id": "55444668926-jep3g45umng2frjrj07e06820pkvqr90.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "55444668926-8d5ngm2p9hcar84obpnqvca26lb44u5q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.checadordeprofesores"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:55444668926:android:4e045c64a9a489a0bbc0af",
+        "android_client_info": {
+          "package_name": "com.example.firebasetesting"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "55444668926-rkr3e0gehurbng1mkka9o2k8lks9spsd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvcpMC-rpvR5uqfjeDsalw1P6dQZNbTkY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "55444668926-jep3g45umng2frjrj07e06820pkvqr90.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "55444668926-8d5ngm2p9hcar84obpnqvca26lb44u5q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.checadordeprofesores"
+              }
             }
           ]
         }

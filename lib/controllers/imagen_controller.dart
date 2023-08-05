@@ -14,7 +14,7 @@ class ImagenController {
     if (!await imagenesEvidencias!.exists()) {
       await imagenesEvidencias!.create(recursive: true);
     }
-    print(imagenesEvidencias!.path);
+    print('Path: ${imagenesEvidencias!.path}');
     return imagenesEvidencias!.path;
   }
 

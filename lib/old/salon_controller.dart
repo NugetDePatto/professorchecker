@@ -1,6 +1,6 @@
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
-import '../models/salon_model.dart';
+import 'salon_model.dart';
 
 class SalonController {
   Box<Salon> salonesBox = Hive.box<Salon>('salones');

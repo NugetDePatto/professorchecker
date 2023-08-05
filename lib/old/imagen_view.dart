@@ -1,4 +1,4 @@
-import 'package:checadordeprofesores/controllers/recorrido_controller.dart';
+import 'package:checadordeprofesores/old/recorrido_controller.dart';
 import 'package:flutter/material.dart';
 
 class ImageViewer extends StatefulWidget {

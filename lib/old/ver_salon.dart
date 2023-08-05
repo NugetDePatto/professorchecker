@@ -12,7 +12,7 @@ class VerSalon extends StatelessWidget {
     // Salon objeto = mapa['objeto'];
 
     return Scaffold(
-      appBar: getAppBar('Salon $salon', [], context),
+      appBar: getAppBar('Salon $salon', context),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(
           left: MediaQuery.of(context).size.width * 0.1,

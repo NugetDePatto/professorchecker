@@ -1,4 +1,4 @@
-Map<String, dynamic> salonesMapa = {
+Map<String, dynamic> _salonesMapa = {
   "103": {
     "observaciones": ["Observacion 1", "Observacion 2"],
     "horarios": {
