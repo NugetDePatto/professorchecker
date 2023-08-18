@@ -1,7 +1,6 @@
 import 'package:checadordeprofesores/utils/responsive_utils.dart';
 import 'package:checadordeprofesores/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -10,9 +9,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     var d = dis(context);
     return Scaffold(
-      appBar: getAppBar(
-          'ASISTENCIA UAT ${GetStorage('informacion').read('codigo')}',
-          context),
+      appBar: getAppBar('ASISTENCIA UAT', context),
       body: Center(
         child: SingleChildScrollView(
           child: Column(

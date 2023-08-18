@@ -17,7 +17,6 @@ class _RecorridoViewState extends State<RecorridoView> {
   RecorridoControlador c = RecorridoControlador();
   GroupButtonController b = GroupButtonController();
   PageController p = PageController();
-  // late TarjetaController t;
 
   @override
   void initState() {
@@ -152,7 +151,8 @@ class _RecorridoViewState extends State<RecorridoView> {
                                       children: [
                                         for (var salon
                                             in c.salones.keys.toList()..sort())
-                                          TarjetaAsistencia(c.salones[salon]),
+                                          for (var clase in c.salones[salon])
+                                            TarjetaAsistencia(clase),
                                         const SizedBox(height: 10),
                                       ],
                                     ),

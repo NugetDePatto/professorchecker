@@ -9,8 +9,6 @@ iniciarhorarioActual() {
 int get horaBase => DateTime.now().hour;
 
 restarhorarioActual() {
-  // print((horaBase - 1) % 24);
-  // print(int.parse(horarioActual.split(':')[0]) % 24);
   var hora = (int.parse(horarioActual.split(':')[0]) - 1) % 24;
   horarioActual = '$hora:00 - ${hora + 1}:00';
 }

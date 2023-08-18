@@ -13,7 +13,23 @@ class TarjetaController {
 
   TarjetaController({required this.datos});
 
-  String get ciclo => '2023 - 2 Verano';
+  String get ciclo => GetStorage().read('ciclo');
+
+  // String get ciclo {
+  //   // enero a mayo = primavera
+  //   // junio a julio = verano
+  //   // agosto a diciembre = otoño
+
+  //   int mesActual = DateTime.now().month;
+
+  //   if (mesActual >= 1 && mesActual <= 5) {
+  //     return '${DateTime.now().year} - 1 Primavera';
+  //   } else if (mesActual >= 6 && mesActual <= 7) {
+  //     return '${DateTime.now().year} - 2 Verano';
+  //   } else {
+  //     return '${DateTime.now().year} - 3 Otoño';
+  //   }
+  // }
 
   String get titular => datos['titular'].toString().trim().replaceAll(' ', '-');
 
@@ -23,9 +39,29 @@ class TarjetaController {
 
   String get horario => horarioActual.replaceAll(' ', '');
 
-  String get codigo => GetStorage('informacion').read('codigo');
+  String get codigo => GetStorage().read('codigo');
 
   GetStorage get asistencias => GetStorage('asistencias');
+
+  //METODOS PARA LOS REPORTES
+
+  crearReporte(String mensaje) {
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    db
+        .collection('ciclos')
+        .doc(ciclo)
+        .collection('reportes')
+        .doc('${titular}_${materia}_${fecha}_${horario}_$codigo')
+        .set({
+      'mensaje': mensaje,
+      'fecha': fechaActual,
+      'hora': horaActual,
+      'titular': titular,
+      'materia': materia,
+      'horario': horario,
+      'codigo': codigo,
+    });
+  }
 
   //METODOS PARA TOMAR ASISTENCIA
 

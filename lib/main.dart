@@ -15,10 +15,13 @@ Future<void> main() async {
 
   await GetStorage.init('asistencias');
 
-  await GetStorage.init('informacion');
+  await GetStorage.init('auxiliares');
 
-  await GetStorage('informacion')
-      .writeIfNull('codigo', generateCode(fechaActual));
+  var box = GetStorage();
+
+  await box.writeIfNull('codigo', generateCode(fechaActual));
+
+  await box.writeIfNull('ciclo', '2023 - 2 Verano');
 
   // await GetStorage('asistencias').erase();
 
