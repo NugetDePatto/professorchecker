@@ -33,13 +33,15 @@ class RecorridoControlador {
         String aula = materia['aula'];
         String bloque = aula.split('-')[0];
 
+        String clave = '${materia['grupo']}${materia['clave']}';
+
         materia['horarioAux'] = ['-', '-', '-', '-', '-', '-', '-'];
         materia['tipoAula'] = bloque.contains('DEI') ? 'Laboratorio' : 'Aula';
         materia['salonAux'] = 'Sin asignar';
 
         for (int i = 0; i < 7; i++) {
           String horas = materia['horario'][i];
-          if (horas != '-') {
+          if (horas.contains(':')) {
             int horaInicio = int.parse(horas.split(':')[0]);
             int horaFin = int.parse(horas.split('-')[1].split(':')[0]);
             while (horaInicio < horaFin) {
@@ -50,19 +52,23 @@ class RecorridoControlador {
                     if (kDebugMode) {
                       print('Agregando materia: $materia');
                     }
-                    calendario[i][horas]![bloque][aula].add(materia);
+                    calendario[i][horas]![bloque][aula]![clave] = materia;
                   } else {
-                    calendario[i][horas]![bloque][aula] = [materia];
+                    calendario[i][horas]![bloque][aula] = {clave: materia};
                   }
                 } else {
                   calendario[i][horas]![bloque] = {
-                    aula: [materia]
+                    aula: {
+                      clave: materia,
+                    }
                   };
                 }
               } else {
                 calendario[i][horas] = {
                   bloque: {
-                    aula: [materia]
+                    aula: {
+                      clave: materia,
+                    }
                   }
                 };
               }
@@ -78,6 +84,7 @@ class RecorridoControlador {
     if (aux != null) {}
 
     await box.write('calendario', calendario);
+    print('exito');
   }
 
   actualizarCalendario(profesores) async {
@@ -90,6 +97,22 @@ class RecorridoControlador {
   }
 
   agregarHorarioACalendario() {}
+
+  String get ciclo {
+    // enero a mayo = primavera
+    // junio a julio = verano
+    // agosto a diciembre = otoño
+
+    int mesActual = DateTime.now().month;
+
+    if (mesActual >= 1 && mesActual <= 5) {
+      return '${DateTime.now().year} - 1 Primavera';
+    } else if (mesActual >= 6 && mesActual <= 7) {
+      return '${DateTime.now().year} - 2 Verano';
+    } else {
+      return '${DateTime.now().year} - 3 Otoño';
+    }
+  }
 
   Future<bool> isConnected() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -110,7 +133,7 @@ class RecorridoControlador {
     if (cacheTime == null) {
       var profesoresServer = await db
           .collection("ciclos")
-          .doc('2023 - 2 Verano')
+          .doc(ciclo)
           .collection('profesores')
           .orderBy('lastUpdate', descending: true)
           .get(
@@ -135,7 +158,7 @@ class RecorridoControlador {
       if (await isConnected()) {
         var profesoresLinea = await db
             .collection('ciclos')
-            .doc('2023 - 2 Verano')
+            .doc(ciclo)
             .collection('profesores')
             .where(
               'lastUpdate',
@@ -160,7 +183,7 @@ class RecorridoControlador {
       //obtengo mi cache con datos actualizados o no
       var profesores = await db
           .collection('ciclos')
-          .doc('2023 - 2 Verano')
+          .doc(ciclo)
           .collection('profesores')
           .orderBy('lastUpdate', descending: true)
           .get(
@@ -199,7 +222,7 @@ class RecorridoControlador {
   //   if (cacheTime == null) {
   //     var profesoresServer = await db
   //         .collection("ciclos")
-  //         .doc('2023 - 2 Verano')
+  //         .doc(ciclo)
   //         .collection('profesores')
   //         .orderBy('lastUpdate', descending: true)
   //         .get(
@@ -220,7 +243,7 @@ class RecorridoControlador {
   //     //actualiza mi cache
   //     var value = await db
   //         .collection('ciclos')
-  //         .doc('2023 - 2 Verano')
+  //         .doc(ciclo)
   //         .collection('profesores')
   //         .where(
   //           'lastUpdate',
@@ -233,7 +256,7 @@ class RecorridoControlador {
   //     //obtengo mi cache con datos actualizados
   //     var profesores = await db
   //         .collection('ciclos')
-  //         .doc('2023 - 2 Verano')
+  //         .doc(ciclo)
   //         .collection('profesores')
   //         .orderBy('lastUpdate', descending: true)
   //         .get(

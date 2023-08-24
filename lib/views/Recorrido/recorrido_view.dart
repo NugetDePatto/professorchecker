@@ -151,7 +151,8 @@ class _RecorridoViewState extends State<RecorridoView> {
                                       children: [
                                         for (var salon
                                             in c.salones.keys.toList()..sort())
-                                          for (var clase in c.salones[salon])
+                                          for (var clase
+                                              in c.salones[salon].values)
                                             TarjetaAsistencia(clase),
                                         const SizedBox(height: 10),
                                       ],

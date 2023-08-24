@@ -1,3 +1,5 @@
+import 'package:checadordeprofesores/controllers/calendario_controller.dart';
+import 'package:checadordeprofesores/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -33,6 +35,7 @@ class _InfoProfViewState extends State<InfoProfView> {
   }
 
   showEditarHorario(Map<String, dynamic> datos) {
+    bool d = dis(context);
     int total = int.parse(datos['hrsSem'].toString().split(':')[0]);
 
     List<TextEditingController> inicio =
@@ -45,112 +48,117 @@ class _InfoProfViewState extends State<InfoProfView> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Editar Horario'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (var i = 0; i < diasSemana.length; i++)
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(diasSemana[i]),
-                    const SizedBox(width: 30),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 130,
-                          child: TextField(
-                            controller: inicio[i],
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Inicio',
-                            ),
-                            readOnly: true,
-                            onTap: () async {
-                              var hora = await showHora();
+        content: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: ListView(
+            // mainAxisSize: MainAxisSize.min,
+            children: [
+              for (var i = 0; i < diasSemana.length; i++)
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(diasSemana[i]),
+                      const Spacer(),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: d ? 130 : 70,
+                            child: TextField(
+                              controller: inicio[i],
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                hintText: 'Inicio',
+                              ),
+                              readOnly: true,
+                              onTap: () async {
+                                var hora = await showHora();
 
-                              if (hora != null) {
-                                int horaInicio = int.parse(hora.split(':')[0]);
-                                // inicio[i].text = hora;
-                                if (horaInicio > 21 || horaInicio < 7) {
+                                if (hora != null) {
+                                  int horaInicio =
+                                      int.parse(hora.split(':')[0]);
+                                  // inicio[i].text = hora;
+                                  if (horaInicio > 21 || horaInicio < 7) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'La hora de inicio debe ser entre las 7:00 y las 21:00 horas',
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    inicio[i].text = hora;
+                                  }
+                                }
+
+                                // state(() {});
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          SizedBox(
+                            width: d ? 130 : 70,
+                            child: TextField(
+                              controller: fin[i],
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                hintText: 'Fin',
+                              ),
+                              readOnly: true,
+                              onTap: () async {
+                                if (inicio[i].text.isEmpty) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
-                                        'La hora de inicio debe ser entre las 7:00 y las 21:00 horas',
+                                        'Seleccione el inicio de la clase antes',
                                       ),
                                     ),
                                   );
                                 } else {
-                                  inicio[i].text = hora;
-                                }
-                              }
-
-                              // state(() {});
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        SizedBox(
-                          width: 130,
-                          child: TextField(
-                            controller: fin[i],
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Fin',
-                            ),
-                            readOnly: true,
-                            onTap: () async {
-                              if (inicio[i].text.isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Seleccione el inicio de la clase antes',
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                var hora = await showHora();
-                                if (hora != null) {
-                                  int horaInicio =
-                                      int.parse(inicio[i].text.split(':')[0]);
-                                  int horaFin = int.parse(hora.split(':')[0]);
-                                  if (horaFin > horaInicio) {
-                                    // fin[i].text = hora;
-                                    if (horaFin > 21 || horaFin < 7) {
+                                  var hora = await showHora();
+                                  if (hora != null) {
+                                    int horaInicio =
+                                        int.parse(inicio[i].text.split(':')[0]);
+                                    int horaFin = int.parse(hora.split(':')[0]);
+                                    if (horaFin > horaInicio) {
+                                      // fin[i].text = hora;
+                                      if (horaFin > 21 || horaFin < 7) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              'La hora de fin debe ser entre las 7:00 y las 21:00 horas',
+                                            ),
+                                          ),
+                                        );
+                                      } else {
+                                        fin[i].text = hora;
+                                      }
+                                    } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         const SnackBar(
                                           content: Text(
-                                            'La hora de fin debe ser entre las 7:00 y las 21:00 horas',
+                                            'La hora de fin debe ser mayor a la de inicio',
                                           ),
                                         ),
                                       );
-                                    } else {
-                                      fin[i].text = hora;
                                     }
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'La hora de fin debe ser mayor a la de inicio',
-                                        ),
-                                      ),
-                                    );
                                   }
                                 }
-                              }
 
-                              // state(() {});
-                            },
+                                // state(() {});
+                              },
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
         actions: [
           TextButton(
@@ -185,6 +193,8 @@ class _InfoProfViewState extends State<InfoProfView> {
                 }
               }
 
+              print(horario);
+
               if (cont != total) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -212,6 +222,13 @@ class _InfoProfViewState extends State<InfoProfView> {
 
                   await box.write(id, x);
                 }
+
+                print(id);
+                print(box.read(id));
+
+                await eliminarMateria(datos, horario);
+
+                await agregarHorario(datos, horario);
 
                 Navigator.pop(context);
               }
@@ -299,13 +316,12 @@ class _InfoProfViewState extends State<InfoProfView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        for (int i = 0; i < 7; i++)
+                  const SizedBox(height: 10),
+                  Wrap(
+                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      for (int i = 0; i < 7; i++)
+                        if (j['horario'][i] != '-')
                           Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Column(
@@ -321,8 +337,7 @@ class _InfoProfViewState extends State<InfoProfView> {
                               ],
                             ),
                           ),
-                      ],
-                    ),
+                    ],
                   ),
                 ],
               ),

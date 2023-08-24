@@ -235,7 +235,8 @@ class _AsistenciaViewState extends State<AsistenciaView> {
             Expanded(
               child: ListView(
                 children: [
-                  for (var x in coincidencias.values) TarjetaAsistencia(x)
+                  for (var x in coincidencias.values)
+                    if (x['aula'] != null) TarjetaAsistencia(x)
                 ],
               ),
             ),

@@ -51,7 +51,9 @@ class _AgendaViewState extends State<AgendaView> {
                       snapshot.data ?? [];
                   return ListView(
                     children: [
-                      for (var profesor in profesores)
+                      for (var profesor in profesores
+                        ..sort((a, b) =>
+                            a.data()['nombre'].compareTo(b.data()['nombre'])))
                         ListTile(
                           title: Text(profesor.data()['nombre']),
                           subtitle: Text(profesor.data()['id']),

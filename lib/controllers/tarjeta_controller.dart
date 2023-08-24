@@ -13,23 +13,23 @@ class TarjetaController {
 
   TarjetaController({required this.datos});
 
-  String get ciclo => GetStorage().read('ciclo');
+  // String get ciclo => GetStorage().read('ciclo');
 
-  // String get ciclo {
-  //   // enero a mayo = primavera
-  //   // junio a julio = verano
-  //   // agosto a diciembre = otoño
+  String get ciclo {
+    // enero a mayo = primavera
+    // junio a julio = verano
+    // agosto a diciembre = otoño
 
-  //   int mesActual = DateTime.now().month;
+    int mesActual = DateTime.now().month;
 
-  //   if (mesActual >= 1 && mesActual <= 5) {
-  //     return '${DateTime.now().year} - 1 Primavera';
-  //   } else if (mesActual >= 6 && mesActual <= 7) {
-  //     return '${DateTime.now().year} - 2 Verano';
-  //   } else {
-  //     return '${DateTime.now().year} - 3 Otoño';
-  //   }
-  // }
+    if (mesActual >= 1 && mesActual <= 5) {
+      return '${DateTime.now().year} - 1 Primavera';
+    } else if (mesActual >= 6 && mesActual <= 7) {
+      return '${DateTime.now().year} - 2 Verano';
+    } else {
+      return '${DateTime.now().year} - 3 Otoño';
+    }
+  }
 
   String get titular => datos['titular'].toString().trim().replaceAll(' ', '-');
 
@@ -65,6 +65,54 @@ class TarjetaController {
 
   //METODOS PARA TOMAR ASISTENCIA
 
+  agregarInasistencia() async {
+    FirebaseFirestore db = FirebaseFirestore.instance;
+
+    db
+        .collection('ciclos')
+        .doc(ciclo)
+        .collection('inasistencias')
+        .doc('${titular}_${materia}_${fecha}_${horario}_$codigo')
+        .set({
+      'fecha': fechaActual,
+      'hora': horaActual,
+      'titular': titular,
+      'materia': materia,
+      'horario': horario,
+      'codigo': codigo,
+      'timestamp': FieldValue.serverTimestamp(),
+      'imagen': obtenerImagen() == null
+          ? ''
+          : '${ciclo}_${titular}_${materia}_${fecha}_${horario}_$codigo.jpg',
+    });
+  }
+
+  actualizarInasistencia() async {
+    FirebaseFirestore db = FirebaseFirestore.instance;
+
+    db
+        .collection('ciclos')
+        .doc(ciclo)
+        .collection('inasistencias')
+        .doc('${titular}_${materia}_${fecha}_${horario}_$codigo')
+        .update({
+      'imagen': obtenerImagen() == null
+          ? ''
+          : '${ciclo}_${titular}_${materia}_${fecha}_${horario}_$codigo.jpg',
+    });
+  }
+
+  eliminarInasistencia() async {
+    FirebaseFirestore db = FirebaseFirestore.instance;
+
+    db
+        .collection('ciclos')
+        .doc(ciclo)
+        .collection('inasistencias')
+        .doc('${titular}_${materia}_${fecha}_${horario}_$codigo')
+        .delete();
+  }
+
   inicialzarAsistencia(GroupButtonController g) {
     var aux = asistencias.read('$titular/$materia/$fecha/$horario/$codigo');
 
@@ -93,7 +141,23 @@ class TarjetaController {
     aux['hora'] = horaActual;
     await asistencias.write('$titular/$materia/$fecha/$horario/$codigo', aux);
 
-    await actualizarAsistencia(aux);
+    Map<String, dynamic> mapa = {
+      'asistencia': aux['asistencia'],
+      'hora': aux['hora'],
+      'imagen': obtenerImagen() == null
+          ? ''
+          : '${ciclo}_${titular}_${materia}_${fecha}_${horario}_$codigo.jpg',
+    };
+
+    await actualizarAsistencia(mapa);
+
+    if (asistencia) {
+      print('eliminar inasistencia');
+      await eliminarInasistencia();
+    } else {
+      print('agregar inasistencia');
+      await agregarInasistencia();
+    }
   }
 
   actualizarAsistencia(Map<String, dynamic> aux) async {
@@ -145,7 +209,18 @@ class TarjetaController {
       aux['imagen'] = ruta;
       await asistencias.write('$titular/$materia/$fecha/$horario/$codigo', aux);
 
-      await actualizarAsistencia(aux);
+      Map<String, dynamic> mapa = {
+        'asistencia': aux['asistencia'],
+        'hora': aux['hora'],
+        'imagen':
+            '${ciclo}_${titular}_${materia}_${fecha}_${horario}_$codigo.jpg',
+      };
+
+      await actualizarAsistencia(mapa);
+
+      await actualizarInasistencia();
+
+      //snackbar en pantalla de que se tomo la imagen
     }
   }
 

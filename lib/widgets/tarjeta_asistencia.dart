@@ -112,16 +112,6 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
                     children: [
                       TextButton(
                           onPressed: () {
-                            mensaje.text = 'No hay profesor';
-                          },
-                          child: const Text('No hay profesor')),
-                      TextButton(
-                          onPressed: () {
-                            mensaje.text = 'No hay alumnos';
-                          },
-                          child: const Text('No hay alumnos')),
-                      TextButton(
-                          onPressed: () {
                             mensaje.text = 'No hay internet';
                           },
                           child: const Text('No hay luz')),
@@ -188,7 +178,7 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
         child: Row(
           children: [
             SizedBox(
-              width: d ? 80 : 35,
+              width: d ? 80 : 40,
               child: Column(
                 children: [
                   Text(
@@ -217,8 +207,6 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
                         fontSize: d ? 24 : 18,
                         fontWeight: FontWeight.bold,
                       ),
-
-                      // textAlign: TextAlign.center,
                     ),
                   ),
                   widget.salon['suplente'].toString() == 'Sin suplente'
@@ -241,10 +229,9 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
     );
   }
 
-  Row botones(bool d) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
+  botones(bool d) {
+    return Wrap(
+      spacing: 10,
       children: [
         Container(
           width: d ? 80 : 50,
@@ -267,7 +254,6 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
             ),
           ),
         ),
-        const Spacer(),
         Container(
           width: d ? 80 : 50,
           height: d ? 80 : 50,
@@ -297,59 +283,55 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
                   ),
                 ),
         ),
-        const Spacer(),
-        Container(
-          color: Colors.white,
-          height: d ? 70 : 40,
-          width: 2,
-        ),
-        const Spacer(),
+        // Container(
+        //   color: Colors.white,
+        //   height: d ? 70 : 40,
+        //   width: 2,
+        // ),
+        // const Spacer(),
         checkProfesor(d),
       ],
     );
   }
 
   Widget checkProfesor(bool d) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 10, bottom: 10, top: 10),
-      child: GroupButton(
-        controller: g,
-        buttons: const ['f', 't'],
-        onSelected: (value, index, isSelected) {
-          if (value == 'f') {
-            t.ponerAsistencia(false);
-          } else {
-            t.ponerAsistencia(true);
-          }
-        },
-        buttonBuilder: (selected, value, context) => AnimatedContainer(
-          duration: const Duration(milliseconds: 100),
-          height: d ? 80 : 50,
-          width: d ? 80 : 50,
-          decoration: BoxDecoration(
-            color: selected
-                ? value == 't'
-                    ? Colors.green
-                    : Colors.red
-                : Colors.transparent,
-            border: Border.all(
-              color: Colors.white,
-              width: 2,
-            ),
-            shape: BoxShape.circle,
+    return GroupButton(
+      controller: g,
+      buttons: const ['f', 't'],
+      onSelected: (value, index, isSelected) {
+        if (value == 'f') {
+          t.ponerAsistencia(false);
+        } else {
+          t.ponerAsistencia(true);
+        }
+      },
+      buttonBuilder: (selected, value, context) => AnimatedContainer(
+        duration: const Duration(milliseconds: 100),
+        height: d ? 80 : 50,
+        width: d ? 80 : 50,
+        decoration: BoxDecoration(
+          color: selected
+              ? value == 't'
+                  ? Colors.green
+                  : Colors.red
+              : Colors.transparent,
+          border: Border.all(
+            color: Colors.white,
+            width: 2,
           ),
-          child: value == 't'
-              ? Icon(
-                  Icons.check,
-                  color: Colors.white,
-                  size: d ? 50 : 30,
-                )
-              : Icon(
-                  Icons.close,
-                  color: Colors.white,
-                  size: d ? 50 : 30,
-                ),
+          shape: BoxShape.circle,
         ),
+        child: value == 't'
+            ? Icon(
+                Icons.check,
+                color: Colors.white,
+                size: d ? 50 : 30,
+              )
+            : Icon(
+                Icons.close,
+                color: Colors.white,
+                size: d ? 50 : 30,
+              ),
       ),
     );
   }

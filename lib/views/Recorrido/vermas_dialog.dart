@@ -71,25 +71,25 @@ verMasDialog(BuildContext context, Map<String, dynamic> info) {
                 ],
               ),
               const SizedBox(height: 5),
-              SizedBox(
-                height: 50,
-                child: ListView(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    for (int i = 0; i < info['horario'].length; i++)
-                      if (info['horario'][i] != '-')
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Column(
-                            children: [
-                              Text(dias[i]),
-                              Text(info['horario'][i]),
-                            ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [
+                      for (int i = 0; i < info['horario'].length; i++)
+                        if (info['horario'][i] != '-')
+                          Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Column(
+                              children: [
+                                Text(dias[i]),
+                                Text(info['horario'][i]),
+                              ],
+                            ),
                           ),
-                        ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ),
               const Divider(),
             ],
