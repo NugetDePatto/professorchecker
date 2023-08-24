@@ -26,47 +26,101 @@ class _AsistenciaViewState extends State<AsistenciaView> {
 
   Map<String, dynamic> coincidencias = {};
 
-  getCoincidencias() async {
-    Map<String, dynamic> aux = {};
-    setState(() {
-      estaCargando = true;
-    });
+  List<dynamic> coin = [];
+
+  getCoin() async {
+    List<dynamic> aux = [];
+
+    estaCargando = true;
+    setState(() {});
+
     if (g.selectedIndex == 0 && tProf.text.isNotEmpty) {
       var profesores = await c.obtener();
 
-      for (var element in profesores) {
-        if (element.id.contains(tProf.text.toUpperCase())) {
-          Map<String, dynamic> materias = element.data()['materias'];
+      for (var profesor in profesores) {
+        if (profesor.id.contains(tProf.text.toUpperCase())) {
+          Map<String, dynamic> materias = profesor.data()['materias'];
+
           for (var materia in materias.values.toList()) {
             var hora = materia['horario'][diaActual - 1];
+
             if (hora == horarioActual) {
-              aux[element.id] = materia;
+              aux.add(materia);
             }
           }
         }
       }
     } else if (g.selectedIndex == 1 && tSalon.text.isNotEmpty) {
-      //esperar medio segundo
       await Future.delayed(const Duration(milliseconds: 300));
       var salones =
           GetStorage().read('calendario')[diaActual - 1][horarioActual];
       if (salones != null) {
-        for (var bloque in salones.keys) {
-          for (var salon in salones[bloque].keys) {
-            if (salon.contains(tSalon.text)) {
-              aux[salon] = salones[bloque][salon];
+        for (var bloque in salones.values) {
+          for (var aula in bloque.keys) {
+            if (aula.contains(tSalon.text)) {
+              Map<String, dynamic> mapa = bloque[aula];
+              // aux = [...mapa.values.toList()];
+              aux.addAll(mapa.values.toList());
             }
           }
         }
       }
     }
+    coin = aux;
 
-    coincidencias = aux;
-
-    setState(() {
-      estaCargando = false;
-    });
+    estaCargando = false;
+    setState(() {});
   }
+
+  // getCoincidencias() async {
+  //   Map<String, dynamic> aux = {};
+  //   setState(() {
+  //     estaCargando = true;
+  //   });
+  //   if (g.selectedIndex == 0 && tProf.text.isNotEmpty) {
+  //     var profesores = await c.obtener();
+
+  //     for (var element in profesores) {
+  //       if (element.id.contains(tProf.text.toUpperCase())) {
+  //         Map<String, dynamic> materias = element.data()['materias'];
+  //         for (var materia in materias.values.toList()) {
+  //           var hora = materia['horario'][diaActual - 1];
+  //           if (hora == horarioActual) {
+  //             aux[element.id] = materia;
+  //           }
+  //         }
+  //       }
+  //     }
+  //   } else if (g.selectedIndex == 1 && tSalon.text.isNotEmpty) {
+  //     //esperar medio segundo
+  //     await Future.delayed(const Duration(milliseconds: 300));
+  //     var salones =
+  //         GetStorage().read('calendario')[diaActual - 1][horarioActual];
+  //     if (salones != null) {
+  //       for (var bloque in salones) {
+  //         for (var aula in bloque.keys) {
+  //           if (aula.contains(tSalon.text)) {
+  //             Map<String, dynamic> mapa = bloque[aula];
+  //             aux[aula] = [...mapa.values.toList()];
+  //           }
+  //         }
+  //       }
+  //       // for (var bloque in salones.keys) {
+  //       //   for (var salon in salones[bloque].keys) {
+  //       //     if (salon.contains(tSalon.text)) {
+  //       //       aux[salon] = salones[bloque][salon];
+  //       //     }
+  //       //   }
+  //       // }
+  //     }
+  //   }
+
+  //   coincidencias = aux;
+
+  //   setState(() {
+  //     estaCargando = false;
+  //   });
+  // }
 
   @override
   void initState() {
@@ -92,7 +146,8 @@ class _AsistenciaViewState extends State<AsistenciaView> {
                     //     ?
                     () {
                   restarhorarioActual();
-                  getCoincidencias();
+                  // getCoincidencias();
+                  getCoin();
                   setState(() {});
                 },
                 // : null,
@@ -118,7 +173,8 @@ class _AsistenciaViewState extends State<AsistenciaView> {
                     //     ?
                     () {
                   sumarhorarioActual();
-                  getCoincidencias();
+                  // getCoincidencias();
+                  getCoin();
                   setState(() {});
                 },
                 // : null,
@@ -168,7 +224,8 @@ class _AsistenciaViewState extends State<AsistenciaView> {
               );
             },
             onSelected: (value, index, isSelected) {
-              getCoincidencias();
+              // getCoincidencias();
+              getCoin();
             },
           ),
           const SizedBox(height: 10),
@@ -193,7 +250,8 @@ class _AsistenciaViewState extends State<AsistenciaView> {
                       ),
                     ),
                     onSubmitted: (value) {
-                      getCoincidencias();
+                      // getCoincidencias();
+                      getCoin();
                     },
                   ),
                 ),
@@ -201,7 +259,8 @@ class _AsistenciaViewState extends State<AsistenciaView> {
                 IconButton.outlined(
                   onPressed: () {
                     FocusScope.of(context).unfocus();
-                    getCoincidencias();
+                    // getCoincidencias();
+                    getCoin();
                   },
                   iconSize: d ? 40 : 30,
                   padding: EdgeInsets.all(d ? 20 : 15),
@@ -225,7 +284,7 @@ class _AsistenciaViewState extends State<AsistenciaView> {
             )
           else if (estaCargando)
             const Expanded(child: Center(child: CircularProgressIndicator()))
-          else if (coincidencias.isEmpty)
+          else if (coin.isEmpty)
             const Expanded(
               child: Center(
                 child: Text('No se encontraron coincidencias'),
@@ -234,10 +293,7 @@ class _AsistenciaViewState extends State<AsistenciaView> {
           else
             Expanded(
               child: ListView(
-                children: [
-                  for (var x in coincidencias.values)
-                    if (x['aula'] != null) TarjetaAsistencia(x)
-                ],
+                children: [for (var x in coin) TarjetaAsistencia(x)],
               ),
             ),
         ],
@@ -249,7 +305,7 @@ class _AsistenciaViewState extends State<AsistenciaView> {
 //   valueListenable: g.selectedIndex == 0 ? tProf : tSalon,
 //   builder: (context, value, child) {
 //     return FutureBuilder(
-//       future: getCoincidencias(),
+      // future: getCoincidencias(),
 //       builder: (context, snapshot) {
 //         Map<String, dynamic> coincidencias = snapshot.data ?? {};
 //         if (snapshot.connectionState == ConnectionState.waiting) {
