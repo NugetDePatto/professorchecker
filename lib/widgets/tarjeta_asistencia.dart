@@ -196,7 +196,7 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
             const SizedBox(width: 15),
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(right: 10),
@@ -230,66 +230,75 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
   }
 
   botones(bool d) {
-    return Wrap(
-      spacing: 10,
+    return Row(
       children: [
-        Container(
-          width: d ? 80 : 50,
-          height: d ? 80 : 50,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: Colors.blue,
-              width: 2,
-            ),
-          ),
-          child: IconButton(
-            iconSize: d ? 40 : 30,
-            color: Colors.blue,
-            onPressed: () {
-              agregarReporte();
-            },
-            icon: const Icon(
-              Icons.report_sharp,
-            ),
-          ),
-        ),
-        Container(
-          width: d ? 80 : 50,
-          height: d ? 80 : 50,
-          decoration: BoxDecoration(
-            shape: t.existeImagen() ? BoxShape.rectangle : BoxShape.circle,
-            border: Border.all(
-              color: Colors.white,
-              width: 2,
-            ),
-          ),
-          child: t.existeImagen()
-              ? Image.file(
-                  t.obtenerImagen(),
-                  fit: BoxFit.cover,
-                )
-              : IconButton(
-                  iconSize: d ? 40 : 30,
-                  color: Colors.white,
-                  onPressed: () async {
-                    await t.tomarImagen();
-                    if (mounted) {
-                      setState(() {});
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.camera_alt_sharp,
+        Expanded(
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            alignment: WrapAlignment.center,
+            spacing: 10,
+            children: [
+              Container(
+                width: d ? 80 : 50,
+                height: d ? 80 : 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.blue,
+                    width: 2,
                   ),
                 ),
+                child: IconButton(
+                  iconSize: d ? 40 : 30,
+                  color: Colors.blue,
+                  onPressed: () {
+                    agregarReporte();
+                  },
+                  icon: const Icon(
+                    Icons.report_sharp,
+                  ),
+                ),
+              ),
+              Container(
+                width: d ? 80 : 50,
+                height: d ? 80 : 50,
+                decoration: BoxDecoration(
+                  shape:
+                      t.existeImagen() ? BoxShape.rectangle : BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.white,
+                    width: 2,
+                  ),
+                ),
+                child: t.existeImagen()
+                    ? Image.file(
+                        t.obtenerImagen(),
+                        fit: BoxFit.cover,
+                      )
+                    : IconButton(
+                        iconSize: d ? 40 : 30,
+                        color: Colors.white,
+                        onPressed: () async {
+                          await t.tomarImagen();
+                          if (mounted) {
+                            setState(() {});
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.camera_alt_sharp,
+                        ),
+                      ),
+              ),
+              // Container(
+              //   color: Colors.white,
+              //   height: d ? 70 : 40,
+              //   width: 2,
+              // ),
+              // const Spacer(),
+              checkProfesor(d),
+            ],
+          ),
         ),
-        // Container(
-        //   color: Colors.white,
-        //   height: d ? 70 : 40,
-        //   width: 2,
-        // ),
-        // const Spacer(),
-        checkProfesor(d),
       ],
     );
   }

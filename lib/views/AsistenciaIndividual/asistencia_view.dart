@@ -72,56 +72,6 @@ class _AsistenciaViewState extends State<AsistenciaView> {
     setState(() {});
   }
 
-  // getCoincidencias() async {
-  //   Map<String, dynamic> aux = {};
-  //   setState(() {
-  //     estaCargando = true;
-  //   });
-  //   if (g.selectedIndex == 0 && tProf.text.isNotEmpty) {
-  //     var profesores = await c.obtener();
-
-  //     for (var element in profesores) {
-  //       if (element.id.contains(tProf.text.toUpperCase())) {
-  //         Map<String, dynamic> materias = element.data()['materias'];
-  //         for (var materia in materias.values.toList()) {
-  //           var hora = materia['horario'][diaActual - 1];
-  //           if (hora == horarioActual) {
-  //             aux[element.id] = materia;
-  //           }
-  //         }
-  //       }
-  //     }
-  //   } else if (g.selectedIndex == 1 && tSalon.text.isNotEmpty) {
-  //     //esperar medio segundo
-  //     await Future.delayed(const Duration(milliseconds: 300));
-  //     var salones =
-  //         GetStorage().read('calendario')[diaActual - 1][horarioActual];
-  //     if (salones != null) {
-  //       for (var bloque in salones) {
-  //         for (var aula in bloque.keys) {
-  //           if (aula.contains(tSalon.text)) {
-  //             Map<String, dynamic> mapa = bloque[aula];
-  //             aux[aula] = [...mapa.values.toList()];
-  //           }
-  //         }
-  //       }
-  //       // for (var bloque in salones.keys) {
-  //       //   for (var salon in salones[bloque].keys) {
-  //       //     if (salon.contains(tSalon.text)) {
-  //       //       aux[salon] = salones[bloque][salon];
-  //       //     }
-  //       //   }
-  //       // }
-  //     }
-  //   }
-
-  //   coincidencias = aux;
-
-  //   setState(() {
-  //     estaCargando = false;
-  //   });
-  // }
-
   @override
   void initState() {
     super.initState();

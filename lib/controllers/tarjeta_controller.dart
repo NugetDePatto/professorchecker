@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:checadordeprofesores/utils/secretkey.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -43,6 +44,8 @@ class TarjetaController {
 
   GetStorage get asistencias => GetStorage('asistencias');
 
+  String get aula => datos['aula'];
+
   //METODOS PARA LOS REPORTES
 
   crearReporte(String mensaje) {
@@ -51,14 +54,11 @@ class TarjetaController {
         .collection('ciclos')
         .doc(ciclo)
         .collection('reportes')
-        .doc('${titular}_${materia}_${fecha}_${horario}_$codigo')
+        .doc('${aula}_${fechaActual}_${horaActual}_${generateCode(mensaje)}')
         .set({
       'mensaje': mensaje,
       'fecha': fechaActual,
       'hora': horaActual,
-      'titular': titular,
-      'materia': materia,
-      'horario': horario,
       'codigo': codigo,
     });
   }
