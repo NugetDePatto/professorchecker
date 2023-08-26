@@ -218,7 +218,11 @@ class TarjetaController {
 
       await actualizarAsistencia(mapa);
 
-      await actualizarInasistencia();
+      if (mapa['asistencia'] != null) {
+        if (mapa['asistencia']) {
+          await actualizarInasistencia();
+        }
+      }
 
       //snackbar en pantalla de que se tomo la imagen
     }
