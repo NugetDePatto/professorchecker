@@ -198,6 +198,17 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  t.isHorarioAux()
+                      ? Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: Colors.teal,
+                          ),
+                          child: const Text('Horario Auxiliar'),
+                        )
+                      : const SizedBox(),
                   Padding(
                     padding: const EdgeInsets.only(right: 10),
                     child: Text(
@@ -281,6 +292,7 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
                         onPressed: () async {
                           await t.tomarImagen();
                           if (mounted) {
+                            print('object');
                             setState(() {});
                           }
                         },

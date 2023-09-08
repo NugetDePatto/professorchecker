@@ -7,12 +7,21 @@ import 'package:get_storage/get_storage.dart';
 import '../utils/date_utils.dart';
 
 class RecorridoControlador {
-  int indexB = 0;
+  // int indexB = 0;
 
-  Map<String, dynamic> get salones {
+  // Map<String, dynamic> get salones {
+  //   var hora = GetStorage().read('calendario')[diaActual - 1][horarioActual];
+  //   if (hora != null) {
+  //     return hora[bloques[indexB]] ?? {};
+  //   } else {
+  //     return {};
+  //   }
+  // }
+
+  Map<String, dynamic> getSalones(bloque) {
     var hora = GetStorage().read('calendario')[diaActual - 1][horarioActual];
     if (hora != null) {
-      return hora[bloques[indexB]] ?? {};
+      return hora[bloque] ?? {};
     } else {
       return {};
     }
@@ -154,6 +163,8 @@ class RecorridoControlador {
         print('Mi cache actual: $cacheTime');
       }
 
+      bool seActualizo = false;
+
       //Si hay internet, actualizo mi cache, si no, obtengo la cache que ya tengo probablemente desactualizada
       if (await isConnected()) {
         var profesoresLinea = await db
@@ -176,6 +187,7 @@ class RecorridoControlador {
             'cacheTime',
             profesoresLinea.docs.first.data()['lastUpdate'].toDate().toString(),
           );
+          seActualizo = true;
           // await crearCalendario(profesoresLinea.docs);
         }
       }
@@ -194,7 +206,9 @@ class RecorridoControlador {
         print('se trajeron del cache: ${profesores.docs.length}');
       }
 
-      // await crearCalendario(profesores.docs);
+      if (seActualizo) {
+        await crearCalendario(profesores.docs);
+      }
 
       return profesores.docs;
     }

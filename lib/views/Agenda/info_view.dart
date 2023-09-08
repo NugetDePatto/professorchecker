@@ -205,6 +205,7 @@ class _InfoProfViewState extends State<InfoProfView> {
                   ),
                 );
               } else {
+                await eliminarMateria(datos, horario);
                 String id = datos['titular'] + datos['grupo'] + datos['clave'];
                 var box = GetStorage('auxiliares');
 
@@ -218,6 +219,7 @@ class _InfoProfViewState extends State<InfoProfView> {
                     'horario': horario,
                     'salon': '',
                     'notas': '',
+                    'materia': datos
                   };
 
                   await box.write(id, x);
@@ -225,9 +227,6 @@ class _InfoProfViewState extends State<InfoProfView> {
 
                 print(id);
                 print(box.read(id));
-
-                await eliminarMateria(datos, horario);
-
                 await agregarHorario(datos, horario);
 
                 Navigator.pop(context);

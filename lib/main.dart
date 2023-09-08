@@ -23,7 +23,7 @@ Future<void> main() async {
 
   await box.writeIfNull('ciclo', '2023 - 2 Verano');
 
-  // await GetStorage('asistencias').erase();
+  // await GetStorage('auxiliares').erase();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demos',
       theme: myTheme,
-      initialRoute: '/',
+      initialRoute: '/prueba',
       routes: routes,
     );
   }

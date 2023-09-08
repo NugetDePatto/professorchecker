@@ -16,19 +16,21 @@ class RecorridoView extends StatefulWidget {
 class _RecorridoViewState extends State<RecorridoView> {
   RecorridoControlador c = RecorridoControlador();
   GroupButtonController b = GroupButtonController();
-  PageController p = PageController();
+
+  int i = 0;
 
   @override
   void initState() {
     super.initState();
-    b.selectIndex(c.indexB);
+    b.selectIndex(i);
     iniciarhorarioActual();
   }
 
   @override
   Widget build(BuildContext context) {
     bool d = dis(context);
-    b.selectIndex(0);
+    b.selectIndex(i);
+    PageController p = PageController(initialPage: i);
     return Scaffold(
       appBar: getAppBar(
         'Lista de Asistencia',
@@ -104,7 +106,7 @@ class _RecorridoViewState extends State<RecorridoView> {
                                 controller: b,
                                 buttons: c.bloques,
                                 onSelected: (value, index, isSelected) {
-                                  c.indexB = index;
+                                  // c.indexB = index;
                                   p.jumpToPage(
                                     index,
                                     // duration: const Duration(milliseconds: 500),
@@ -144,15 +146,21 @@ class _RecorridoViewState extends State<RecorridoView> {
                           },
                           itemCount: 5,
                           itemBuilder: (context, index) {
-                            c.indexB = index;
-                            return c.salones.isNotEmpty
+                            i = index;
+                            return c.getSalones(c.bloques[index]).isNotEmpty
                                 ? SingleChildScrollView(
                                     child: Column(
                                       children: [
                                         for (var salon
-                                            in c.salones.keys.toList()..sort())
-                                          for (var clase
-                                              in c.salones[salon].values)
+                                            in c
+                                                .getSalones(c.bloques[index])
+                                                .keys
+                                                .toList()
+                                              ..sort())
+                                          for (var clase in c
+                                              .getSalones(
+                                                  c.bloques[index])[salon]
+                                              .values)
                                             TarjetaAsistencia(clase),
                                         const SizedBox(height: 10),
                                       ],

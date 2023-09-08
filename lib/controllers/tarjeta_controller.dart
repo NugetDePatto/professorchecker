@@ -46,6 +46,15 @@ class TarjetaController {
 
   String get aula => datos['aula'];
 
+  bool isHorarioAux() {
+    GetStorage auxiliares = GetStorage('auxiliares');
+
+    var aux =
+        auxiliares.read(datos['titular'] + datos['grupo'] + datos['clave']);
+
+    return aux != null;
+  }
+
   //METODOS PARA LOS REPORTES
 
   crearReporte(String mensaje) {
@@ -57,9 +66,11 @@ class TarjetaController {
         .doc('${aula}_${fechaActual}_${horaActual}_${generateCode(mensaje)}')
         .set({
       'mensaje': mensaje,
-      'fecha': fechaActual,
-      'hora': horaActual,
+      'fecha': '$fechaActual $horaActual',
       'codigo': codigo,
+      'titular': titular,
+      'aula': aula,
+      'materia': materia
     });
   }
 

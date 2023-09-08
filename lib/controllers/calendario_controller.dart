@@ -4,16 +4,35 @@ import 'package:get_storage/get_storage.dart';
 eliminarMateria(materia, horario) async {
   var calendario = GetStorage().read('calendario');
 
-  var horarioAnterior = materia['horario'];
+  var horarioAux = GetStorage('auxiliares')
+      .read(materia['titular'] + materia['grupo'] + materia['clave']);
+
+  var horarioAnterior = [];
+
+  if (horarioAux == null) {
+    horarioAnterior = materia['horario'];
+  } else {
+    horarioAnterior = horarioAux['horario'];
+  }
+
   var bloque = materia['aula'].toString().split('-')[0];
   var aula = materia['aula'];
   var clave = materia['grupo'] + materia['clave'];
 
   for (int i = 0; i < 7; i++) {
     if (horarioAnterior[i].contains(':')) {
-      print(calendario[i][horarioAnterior[i]][bloque][aula]);
-      calendario[i][horarioAnterior[i]][bloque][aula].remove(clave);
-      print(calendario[i][horarioAnterior[i]][bloque][aula]);
+      // print(calendario[i][horarioAnterior[i]][bloque][aula]);
+      // calendario[i][horarioAnterior[i]][bloque][aula].remove(clave);
+      // print(calendario[i][horarioAnterior[i]][bloque][aula]);
+
+      int horaInicio = int.parse(horarioAnterior[i].split(':')[0]);
+      int horaFin = int.parse(horarioAnterior[i].split('-')[1].split(':')[0]);
+
+      while (horaInicio < horaFin) {
+        String horas = '$horaInicio:00 - ${horaInicio + 1}:00';
+        calendario[i][horas][bloque][aula].remove(clave);
+        horaInicio++;
+      }
     }
   }
 

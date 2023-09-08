@@ -50,6 +50,33 @@ class _AsistenciaViewState extends State<AsistenciaView> {
           }
         }
       }
+
+      var auxiliares = GetStorage('auxiliares');
+
+      for (var auxm in auxiliares.getValues()) {
+        Map<dynamic, dynamic> auxiliar = auxm as Map<dynamic, dynamic>;
+        // for (int i = 0; i < x.length; i++) {
+        //   aux.add(auxiliar['materia']);
+        // }
+
+        List<dynamic> horarioAux = auxiliar['horario'];
+        Map<String, dynamic> materia = auxiliar['materia'];
+
+        for (int i = 0; i < horarioAux.length; i++) {
+          if (horarioAux[i] != '-') {
+            int horaInicio = int.parse(horarioAux[i].split(':')[0]);
+            int horaFin = int.parse(horarioAux[i].split('-')[1].split(':')[0]);
+
+            while (horaInicio < horaFin) {
+              String horas = '$horaInicio:00 - ${horaInicio + 1}:00';
+              if (horas == horarioActual) {
+                aux.add(materia);
+              }
+              horaInicio++;
+            }
+          }
+        }
+      }
     } else if (g.selectedIndex == 1 && tSalon.text.isNotEmpty) {
       await Future.delayed(const Duration(milliseconds: 300));
       var salones =
@@ -82,6 +109,7 @@ class _AsistenciaViewState extends State<AsistenciaView> {
   @override
   Widget build(BuildContext context) {
     bool d = dis(context);
+
     return Scaffold(
       appBar: getAppBar('Buscador', context),
       body: Column(
