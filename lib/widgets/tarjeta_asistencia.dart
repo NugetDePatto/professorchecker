@@ -30,135 +30,6 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
     t.inicialzarAsistencia(g);
   }
 
-  // agregarReporte() {
-  //   TextEditingController mensaje = TextEditingController();
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: Row(
-  //           children: [
-  //             const Text('Reporte'),
-  //             const Spacer(),
-  //             IconButton(
-  //               iconSize: 30,
-  //               icon: const Icon(Icons.close),
-  //               onPressed: () {
-  //                 Navigator.of(context).pop();
-  //               },
-  //             ),
-  //           ],
-  //         ),
-  //         content: SingleChildScrollView(
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: <Widget>[
-  //               const Divider(),
-  //               Text('Materia:  ${widget.salon['materia']}'),
-  //               Text('Titular:  ${widget.salon['titular']}'),
-  //               Text(
-  //                   'Suplente:  ${widget.salon['suplente'].toString().toUpperCase()}'),
-  //               const Divider(),
-  //               Row(
-  //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //                 children: [
-  //                   Column(
-  //                     children: [
-  //                       const Text('Clave'),
-  //                       Text(widget.salon['clave']),
-  //                     ],
-  //                   ),
-  //                   Column(
-  //                     children: [
-  //                       const Text('Aula'),
-  //                       Text(widget.salon['aula']),
-  //                     ],
-  //                   ),
-  //                   Column(
-  //                     children: [
-  //                       const Text('Grupo'),
-  //                       Text(widget.salon['grupo']),
-  //                     ],
-  //                   ),
-  //                 ],
-  //               ),
-  //               const Divider(),
-  //               const Text('Reporte'),
-  //               const SizedBox(height: 10),
-  //               TextField(
-  //                 controller: mensaje,
-  //                 maxLines: 5,
-  //                 decoration: const InputDecoration(
-  //                   border: OutlineInputBorder(),
-  //                   hintText: 'Escribe aqui tu reporte',
-  //                 ),
-  //               ),
-  //               const SizedBox(height: 10),
-  //               // const Text('Imagen'),
-  //               // const SizedBox(height: 10),
-  //               // ElevatedButton(
-  //               //   onPressed: () {},
-  //               //   child: const Text('Tomar foto'),
-  //               // ),
-  //               // const SizedBox(height: 10),
-
-  //               //botones con sugerencias de mensajes para el reporte
-  //               const Text('Sugerencias'),
-  //               const SizedBox(height: 10),
-
-  //               SingleChildScrollView(
-  //                 scrollDirection: Axis.horizontal,
-  //                 child: Row(
-  //                   children: [
-  //                     TextButton(
-  //                         onPressed: () {
-  //                           mensaje.text = 'No hay internet';
-  //                         },
-  //                         child: const Text('No hay luz')),
-  //                     TextButton(
-  //                         onPressed: () {
-  //                           mensaje.text = 'No hay luz';
-  //                         },
-  //                         child: const Text('No hay mesas')),
-  //                     TextButton(
-  //                         onPressed: () {
-  //                           mensaje.text = 'No hay sillas';
-  //                         },
-  //                         child: const Text('No hay sillas')),
-  //                     TextButton(
-  //                         onPressed: () {
-  //                           mensaje.text = 'No hay mesabancos';
-  //                         },
-  //                         child: const Text('No hay mesabancos')),
-  //                     TextButton(
-  //                         onPressed: () {
-  //                           mensaje.text = 'No funciona el clima';
-  //                         },
-  //                         child: const Text('No funciona el clima')),
-  //                   ],
-  //                 ),
-  //               ),
-  //               const SizedBox(height: 10),
-  //               Row(
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 children: [
-  //                   ElevatedButton(
-  //                     onPressed: () async {
-  //                       await t.crearReporte(mensaje.text);
-  //                       Navigator.of(context).pop();
-  //                     },
-  //                     child: const Text('Enviar'),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     bool d = dis(context);
@@ -279,7 +150,7 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
                   shape:
                       t.existeImagen() ? BoxShape.rectangle : BoxShape.circle,
                   border: Border.all(
-                    color: Colors.white,
+                    color: t.seTomo ? Colors.white : Colors.grey,
                     width: 2,
                   ),
                 ),
@@ -290,11 +161,25 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
                       )
                     : IconButton(
                         iconSize: d ? 40 : 30,
-                        color: Colors.white,
+                        color: t.seTomo ? Colors.white : Colors.grey,
                         onPressed: () async {
-                          await t.tomarYGuardarImagen();
-                          if (mounted) {
-                            setState(() {});
+                          if (t.seTomo) {
+                            await t.tomarYGuardarImagen();
+                            if (mounted) {
+                              setState(() {});
+                            }
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'No se puede tomar la foto sin haber tomado asistencia',
+                                  textAlign: TextAlign.center,
+                                ),
+                                duration: Duration(
+                                  seconds: 1,
+                                ),
+                              ),
+                            );
                           }
                         },
                         icon: const Icon(
@@ -314,12 +199,13 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
     return GroupButton(
       controller: g,
       buttons: const ['f', 't'],
-      onSelected: (value, index, isSelected) {
+      onSelected: (value, index, isSelected) async {
         if (value == 'f') {
-          t.addAsistenciaLocalYFS(false);
+          await t.addAsistenciaLocalYFS(false);
         } else {
-          t.addAsistenciaLocalYFS(true);
+          await t.addAsistenciaLocalYFS(true);
         }
+        setState(() {});
       },
       buttonBuilder: (selected, value, context) => AnimatedContainer(
         duration: const Duration(milliseconds: 100),

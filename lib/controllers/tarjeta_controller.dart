@@ -48,6 +48,12 @@ class TarjetaController {
 
   String get aula => datos['aula'];
 
+  bool get seTomo => GetStorage('asistencias')
+              .read('$titular/$claveMateria/$fecha/$horario/$codigo') !=
+          null
+      ? true
+      : false;
+
   bool isHorarioAux() {
     GetStorage auxiliares = GetStorage('auxiliares');
 
@@ -79,23 +85,6 @@ class TarjetaController {
       'timeServer': FieldValue.serverTimestamp(),
     });
   }
-
-  // reporteAula(String mensaje) {
-  //   FirebaseFirestore db = FirebaseFirestore.instance;
-  //   db
-  //       .collection('ciclos')
-  //       .doc(ciclo)
-  //       .collection('reportes')
-  //       .doc('${aula}_${fechaActual}_${horaActual}_${generateCode(mensaje)}')
-  //       .set({
-  //     'mensaje': mensaje,
-  //     'fecha': '$fechaActual $horaActual',
-  //     'codigo': codigo,
-  //     'titular': titular,
-  //     'aula': aula,
-  //     'claveMateria': claveMateria
-  //   });
-  // }
 
   //NUEVA ASISTENCIA
 

@@ -7,17 +7,6 @@ import 'package:get_storage/get_storage.dart';
 import '../utils/date_utils.dart';
 
 class RecorridoControlador {
-  // int indexB = 0;
-
-  // Map<String, dynamic> get salones {
-  //   var hora = GetStorage().read('calendario')[diaActual - 1][horarioActual];
-  //   if (hora != null) {
-  //     return hora[bloques[indexB]] ?? {};
-  //   } else {
-  //     return {};
-  //   }
-  // }
-
   Map<String, dynamic> getSalones(bloque) {
     var hora = GetStorage().read('calendario')[diaActual - 1][horarioActual];
     if (hora != null) {
