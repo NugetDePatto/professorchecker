@@ -114,7 +114,9 @@ class RecorridoControlador {
 
     int mesActual = DateTime.now().month;
 
-    if (mesActual >= 1 && mesActual <= 5) {
+    if (kDebugMode) {
+      return 'TEST - 2023 - 3 Otoño';
+    } else if (mesActual >= 1 && mesActual <= 5) {
       return '${DateTime.now().year} - 1 Primavera';
     } else if (mesActual >= 6 && mesActual <= 7) {
       return '${DateTime.now().year} - 2 Verano';
@@ -167,28 +169,37 @@ class RecorridoControlador {
 
       //Si hay internet, actualizo mi cache, si no, obtengo la cache que ya tengo probablemente desactualizada
       if (await isConnected()) {
-        var profesoresLinea = await db
-            .collection('ciclos')
-            .doc(ciclo)
-            .collection('profesores')
-            .where(
-              'lastUpdate',
-              isGreaterThan: cacheTime,
-            )
-            .get(
-              GetOptions(source: server),
-            );
-        if (kDebugMode) {
-          print('se trajeron de linea: ${profesoresLinea.docs.length}');
-        }
+        QuerySnapshot<Map<String, dynamic>> profesoresLinea;
+        try {
+          profesoresLinea = await db
+              .collection('ciclos')
+              .doc(ciclo)
+              .collection('profesores')
+              .where(
+                'lastUpdate',
+                isGreaterThan: cacheTime,
+              )
+              .get(
+                GetOptions(source: server),
+              );
 
-        if (profesoresLinea.docs.isNotEmpty) {
-          await box.write(
-            'cacheTime',
-            profesoresLinea.docs.first.data()['lastUpdate'].toDate().toString(),
-          );
-          seActualizo = true;
-          // await crearCalendario(profesoresLinea.docs);
+          if (kDebugMode) {
+            print('se trajeron de linea: ${profesoresLinea.docs.length}');
+          }
+
+          if (profesoresLinea.docs.isNotEmpty) {
+            await box.write(
+              'cacheTime',
+              profesoresLinea.docs.first
+                  .data()['lastUpdate']
+                  .toDate()
+                  .toString(),
+            );
+            seActualizo = true;
+            // await crearCalendario(profesoresLinea.docs);
+          }
+        } catch (e) {
+          print(e);
         }
       }
 

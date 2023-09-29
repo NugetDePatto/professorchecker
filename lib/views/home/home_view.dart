@@ -20,7 +20,7 @@ class HomePage extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(500, d ? 150 : 100),
                 ),
-                onPressed: () async {
+                onPressed: () {
                   Navigator.pushNamed(context, '/recorrido');
                 },
                 child: Row(

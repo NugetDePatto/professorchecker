@@ -30,134 +30,134 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
     t.inicialzarAsistencia(g);
   }
 
-  agregarReporte() {
-    TextEditingController mensaje = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Row(
-            children: [
-              const Text('Reporte'),
-              const Spacer(),
-              IconButton(
-                iconSize: 30,
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                const Divider(),
-                Text('Materia:  ${widget.salon['materia']}'),
-                Text('Titular:  ${widget.salon['titular']}'),
-                Text(
-                    'Suplente:  ${widget.salon['suplente'].toString().toUpperCase()}'),
-                const Divider(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Column(
-                      children: [
-                        const Text('Clave'),
-                        Text(widget.salon['clave']),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        const Text('Aula'),
-                        Text(widget.salon['aula']),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        const Text('Grupo'),
-                        Text(widget.salon['grupo']),
-                      ],
-                    ),
-                  ],
-                ),
-                const Divider(),
-                const Text('Reporte'),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: mensaje,
-                  maxLines: 5,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Escribe aqui tu reporte',
-                  ),
-                ),
-                const SizedBox(height: 10),
-                // const Text('Imagen'),
-                // const SizedBox(height: 10),
-                // ElevatedButton(
-                //   onPressed: () {},
-                //   child: const Text('Tomar foto'),
-                // ),
-                // const SizedBox(height: 10),
+  // agregarReporte() {
+  //   TextEditingController mensaje = TextEditingController();
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Row(
+  //           children: [
+  //             const Text('Reporte'),
+  //             const Spacer(),
+  //             IconButton(
+  //               iconSize: 30,
+  //               icon: const Icon(Icons.close),
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //             ),
+  //           ],
+  //         ),
+  //         content: SingleChildScrollView(
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: <Widget>[
+  //               const Divider(),
+  //               Text('Materia:  ${widget.salon['materia']}'),
+  //               Text('Titular:  ${widget.salon['titular']}'),
+  //               Text(
+  //                   'Suplente:  ${widget.salon['suplente'].toString().toUpperCase()}'),
+  //               const Divider(),
+  //               Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //                 children: [
+  //                   Column(
+  //                     children: [
+  //                       const Text('Clave'),
+  //                       Text(widget.salon['clave']),
+  //                     ],
+  //                   ),
+  //                   Column(
+  //                     children: [
+  //                       const Text('Aula'),
+  //                       Text(widget.salon['aula']),
+  //                     ],
+  //                   ),
+  //                   Column(
+  //                     children: [
+  //                       const Text('Grupo'),
+  //                       Text(widget.salon['grupo']),
+  //                     ],
+  //                   ),
+  //                 ],
+  //               ),
+  //               const Divider(),
+  //               const Text('Reporte'),
+  //               const SizedBox(height: 10),
+  //               TextField(
+  //                 controller: mensaje,
+  //                 maxLines: 5,
+  //                 decoration: const InputDecoration(
+  //                   border: OutlineInputBorder(),
+  //                   hintText: 'Escribe aqui tu reporte',
+  //                 ),
+  //               ),
+  //               const SizedBox(height: 10),
+  //               // const Text('Imagen'),
+  //               // const SizedBox(height: 10),
+  //               // ElevatedButton(
+  //               //   onPressed: () {},
+  //               //   child: const Text('Tomar foto'),
+  //               // ),
+  //               // const SizedBox(height: 10),
 
-                //botones con sugerencias de mensajes para el reporte
-                const Text('Sugerencias'),
-                const SizedBox(height: 10),
+  //               //botones con sugerencias de mensajes para el reporte
+  //               const Text('Sugerencias'),
+  //               const SizedBox(height: 10),
 
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      TextButton(
-                          onPressed: () {
-                            mensaje.text = 'No hay internet';
-                          },
-                          child: const Text('No hay luz')),
-                      TextButton(
-                          onPressed: () {
-                            mensaje.text = 'No hay luz';
-                          },
-                          child: const Text('No hay mesas')),
-                      TextButton(
-                          onPressed: () {
-                            mensaje.text = 'No hay sillas';
-                          },
-                          child: const Text('No hay sillas')),
-                      TextButton(
-                          onPressed: () {
-                            mensaje.text = 'No hay mesabancos';
-                          },
-                          child: const Text('No hay mesabancos')),
-                      TextButton(
-                          onPressed: () {
-                            mensaje.text = 'No funciona el clima';
-                          },
-                          child: const Text('No funciona el clima')),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        await t.crearReporte(mensaje.text);
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Enviar'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+  //               SingleChildScrollView(
+  //                 scrollDirection: Axis.horizontal,
+  //                 child: Row(
+  //                   children: [
+  //                     TextButton(
+  //                         onPressed: () {
+  //                           mensaje.text = 'No hay internet';
+  //                         },
+  //                         child: const Text('No hay luz')),
+  //                     TextButton(
+  //                         onPressed: () {
+  //                           mensaje.text = 'No hay luz';
+  //                         },
+  //                         child: const Text('No hay mesas')),
+  //                     TextButton(
+  //                         onPressed: () {
+  //                           mensaje.text = 'No hay sillas';
+  //                         },
+  //                         child: const Text('No hay sillas')),
+  //                     TextButton(
+  //                         onPressed: () {
+  //                           mensaje.text = 'No hay mesabancos';
+  //                         },
+  //                         child: const Text('No hay mesabancos')),
+  //                     TextButton(
+  //                         onPressed: () {
+  //                           mensaje.text = 'No funciona el clima';
+  //                         },
+  //                         child: const Text('No funciona el clima')),
+  //                   ],
+  //                 ),
+  //               ),
+  //               const SizedBox(height: 10),
+  //               Row(
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 children: [
+  //                   ElevatedButton(
+  //                     onPressed: () async {
+  //                       await t.crearReporte(mensaje.text);
+  //                       Navigator.of(context).pop();
+  //                     },
+  //                     child: const Text('Enviar'),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -263,7 +263,9 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
                   iconSize: d ? 40 : 30,
                   color: Colors.blue,
                   onPressed: () {
-                    agregarReporte();
+                    // agregarReporte();
+                    Navigator.of(context)
+                        .pushNamed('/reporte', arguments: widget.salon);
                   },
                   icon: const Icon(
                     Icons.report_sharp,
@@ -290,9 +292,8 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
                         iconSize: d ? 40 : 30,
                         color: Colors.white,
                         onPressed: () async {
-                          await t.tomarImagen();
+                          await t.tomarYGuardarImagen();
                           if (mounted) {
-                            print('object');
                             setState(() {});
                           }
                         },
@@ -301,12 +302,6 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
                         ),
                       ),
               ),
-              // Container(
-              //   color: Colors.white,
-              //   height: d ? 70 : 40,
-              //   width: 2,
-              // ),
-              // const Spacer(),
               checkProfesor(d),
             ],
           ),
@@ -321,9 +316,9 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
       buttons: const ['f', 't'],
       onSelected: (value, index, isSelected) {
         if (value == 'f') {
-          t.ponerAsistencia(false);
+          t.addAsistenciaLocalYFS(false);
         } else {
-          t.ponerAsistencia(true);
+          t.addAsistenciaLocalYFS(true);
         }
       },
       buttonBuilder: (selected, value, context) => AnimatedContainer(

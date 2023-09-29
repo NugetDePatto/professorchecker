@@ -17,13 +17,11 @@ Future<void> main() async {
 
   await GetStorage.init('auxiliares');
 
-  var box = GetStorage();
+  GetStorage box = GetStorage();
 
   await box.writeIfNull('codigo', generateCode(fechaActual));
 
   await box.writeIfNull('ciclo', '2023 - 2 Verano');
-
-  // await GetStorage('auxiliares').erase();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -31,7 +29,7 @@ Future<void> main() async {
 
   var db = FirebaseFirestore.instance;
 
-  await db.waitForPendingWrites();
+  db.waitForPendingWrites();
 
   runApp(const MyApp());
 }
@@ -45,7 +43,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demos',
       theme: myTheme,
-      initialRoute: '/prueba',
+      initialRoute: '/',
       routes: routes,
     );
   }
