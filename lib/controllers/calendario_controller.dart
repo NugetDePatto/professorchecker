@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:get_storage/get_storage.dart';
 
-eliminarMateria(materia, horario) async {
+eliminarMateria(materia) async {
   var calendario = GetStorage().read('calendario');
 
   var horarioAux = GetStorage('auxiliares')
@@ -60,7 +60,7 @@ agregarHorario(materia, horario) async {
                 print('Agregando materia: $materia');
               }
               calendario[i][horas]![bloque][aula]![clave] = materia;
-              print(calendario[i][horas][bloque][aula]);
+              if (kDebugMode) print(calendario[i][horas][bloque][aula]);
             } else {
               calendario[i][horas]![bloque][aula] = {clave: materia};
             }

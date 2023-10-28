@@ -1,11 +1,12 @@
+import 'package:checadordeprofesores/views/Agenda/cambiarsalon_view.dart';
 import 'package:checadordeprofesores/views/Agenda/info_view.dart';
 import 'package:checadordeprofesores/views/AsistenciaIndividual/asistencia_view.dart';
 import 'package:checadordeprofesores/views/Recorrido/recorrido_view.dart';
 import 'package:checadordeprofesores/views/Agenda/agenda_view.dart';
 import 'package:checadordeprofesores/views/home/home_view.dart';
+import 'package:checadordeprofesores/views/home/options_view.dart';
 import 'package:checadordeprofesores/widgets/ReporteView.dart';
 import 'package:flutter/material.dart';
-import '../views/Agenda/buscador_view.dart';
 import '../views/Agenda/escogerhoras_view.dart';
 
 Map<String, WidgetBuilder> get routes => {
@@ -16,5 +17,6 @@ Map<String, WidgetBuilder> get routes => {
       '/info_prof': (context) => const InfoProfView(),
       '/edit_materia': (context) => const EscogerHorasView(),
       '/reporte': (context) => const ReporteView(),
-      '/buscador': (context) => const BuscadorView(),
+      '/options': (context) => const OptionsView(),
+      '/edit_salon': (context) => const CambiarSalonView(),
     };

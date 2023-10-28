@@ -44,7 +44,7 @@ class _AgendaViewState extends State<AgendaView> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(20.0),
             child: TextField(
               controller: t,
               decoration: const InputDecoration(
@@ -90,8 +90,18 @@ class _AgendaViewState extends State<AgendaView> {
                                         .data()['nombre']
                                         .compareTo(b.data()['nombre'])))
                                     ListTile(
-                                      title: Text(profesor.data()['nombre']),
-                                      subtitle: Text(profesor.data()['id']),
+                                      title: Text(
+                                        profesor.data()['nombre'],
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      leading: Text(
+                                        profesor.data()['id'],
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      ),
                                       onTap: () {
                                         Navigator.pushNamed(
                                             context, '/info_prof',
@@ -117,16 +127,16 @@ class _AgendaViewState extends State<AgendaView> {
   }
 }
 
-class name extends StatefulWidget {
-  const name({super.key});
+// class name extends StatefulWidget {
+//   const name({super.key});
 
-  @override
-  State<name> createState() => _nameState();
-}
+//   @override
+//   State<name> createState() => _nameState();
+// }
 
-class _nameState extends State<name> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
+// class _nameState extends State<name> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container();
+//   }
+// }

@@ -143,30 +143,51 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
                   ),
                 ),
               ),
+              //primero se evaluara si se tomo la asistencia, si si entonces se va a inhabilitar el boton, si no, comprobara si en getstorage ya se tomo la foto,
               Container(
                 width: d ? 80 : 50,
                 height: d ? 80 : 50,
                 decoration: BoxDecoration(
-                  shape:
-                      t.existeImagen() ? BoxShape.rectangle : BoxShape.circle,
+                  shape: t.seTomoAsitencia
+                      ? t.existeImagen
+                          ? BoxShape.rectangle
+                          : BoxShape.circle
+                      : BoxShape.circle,
                   border: Border.all(
-                    color: t.seTomo ? Colors.white : Colors.grey,
+                    color: t.seTomoAsitencia
+                        ? t.existeImagen
+                            ? Colors.transparent
+                            : Colors.white
+                        : Colors.grey,
                     width: 2,
                   ),
                 ),
-                child: t.existeImagen()
+                child: t.obtenerImagen() != null
                     ? Image.file(
-                        t.obtenerImagen(),
+                        t.obtenerImagen()!,
                         fit: BoxFit.cover,
                       )
                     : IconButton(
                         iconSize: d ? 40 : 30,
-                        color: t.seTomo ? Colors.white : Colors.grey,
-                        onPressed: () async {
-                          if (t.seTomo) {
-                            await t.tomarYGuardarImagen();
-                            if (mounted) {
-                              setState(() {});
+                        color: t.seTomoAsitencia ? Colors.white : Colors.grey,
+                        onPressed: () {
+                          if (t.seTomoAsitencia) {
+                            if (!t.existeImagen) {
+                              t.tomarYGuardarImagen().then((value) {
+                                if (mounted) setState(() {});
+                              });
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'La imagen ya se tomo...',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  duration: Duration(
+                                    seconds: 1,
+                                  ),
+                                ),
+                              );
                             }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -182,8 +203,13 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
                             );
                           }
                         },
-                        icon: const Icon(
-                          Icons.camera_alt_sharp,
+                        icon: Icon(
+                          // Icons.camera_alt_sharp,
+                          t.seTomoAsitencia
+                              ? t.existeImagen
+                                  ? Icons.image
+                                  : Icons.camera_alt_sharp
+                              : Icons.camera_alt_sharp,
                         ),
                       ),
               ),

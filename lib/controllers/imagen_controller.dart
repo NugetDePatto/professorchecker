@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path_provider/path_provider.dart';
 
 class ImagenController {
@@ -14,7 +16,7 @@ class ImagenController {
     if (!await imagenesEvidencias!.exists()) {
       await imagenesEvidencias!.create(recursive: true);
     }
-    print('Path: ${imagenesEvidencias!.path}');
+    if (kDebugMode) print('Path: ${imagenesEvidencias!.path}');
     return imagenesEvidencias!.path;
   }
 

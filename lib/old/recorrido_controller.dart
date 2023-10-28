@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:checadordeprofesores/controllers/imagen_controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 
 import 'horario_model.dart';
@@ -138,7 +139,7 @@ class RecorridoController {
     e.value.observaciones.add(observacion);
 
     for (var x in e.value.observaciones) {
-      print(x);
+      if (kDebugMode) print(x);
     }
 
     salonesBox.put(e.key, e.value);

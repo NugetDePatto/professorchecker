@@ -32,7 +32,7 @@ class TarjetaController {
     }
   }
 
-  String get titular => datos['titular'].toString().trim().replaceAll(' ', '-');
+  String get titular => datos['titular'].toString().trim();
 
   String get claveMateria => '${datos['grupo']}-${datos['clave']}';
 
@@ -48,8 +48,8 @@ class TarjetaController {
 
   String get aula => datos['aula'];
 
-  bool get seTomo => GetStorage('asistencias')
-              .read('$titular/$claveMateria/$fecha/$horario/$codigo') !=
+  bool get seTomoAsitencia => GetStorage('asistencias')
+              .read('$titular/$claveMateria/$fecha/$horario') !=
           null
       ? true
       : false;
@@ -75,6 +75,7 @@ class TarjetaController {
         .doc(
             '${etiqueta ? titular : aula}_${fechaActual}_${horaActual}_${generateCode(mensaje)}')
         .set({
+      'tipo': etiqueta ? 'profesor' : 'mantenimiento',
       'mensaje': mensaje,
       'fecha': '$fechaActual $horaActual',
       'codigo': codigo,
@@ -87,52 +88,16 @@ class TarjetaController {
   }
 
   //NUEVA ASISTENCIA
-
   addAsistenciaLocalYFS(bool asistio) async {
     var asistencia = await obtenerAsistencia();
 
     asistencia['asistencia'] = asistio;
     asistencia['hora'] = horaActual;
 
-    GetStorage('asistencias')
-        .write('$titular/$claveMateria/$fecha/$horario/$codigo', asistencia);
+    await GetStorage('asistencias')
+        .write('$titular/$claveMateria/$fecha/$horario', asistencia);
 
-    // asistencia en coleccin 'asistencias'
-
-    FirebaseFirestore db = FirebaseFirestore.instance;
-    await db
-        .collection('ciclos')
-        .doc(ciclo)
-        .collection('asistencias')
-        .doc('${titular}_${claveMateria}_${fecha}_${horario}_$codigo')
-        .set(
-      {
-        codigo: {
-          'asistencia': asistio,
-          'hora': horaActual,
-          'imagen': obtenerImagen() == null
-              ? ''
-              : '${ciclo}_${titular}_${claveMateria}_${fecha}_${horario}_$codigo.jpg',
-          'materia': materia,
-          'titular': titular,
-          'aula': aula,
-          'timeServer': FieldValue.serverTimestamp(),
-        }
-      },
-    );
-
-    //asistencia en coleccion 'profesores'
-
-    await db
-        .collection('ciclos')
-        .doc(ciclo)
-        .collection('profesores')
-        .doc(titular)
-        .collection('asistencias')
-        .doc(claveMateria)
-        .collection(fecha)
-        .doc(horario)
-        .set({
+    Map<String, dynamic> valor = {
       codigo: {
         'asistencia': asistio,
         'hora': horaActual,
@@ -144,12 +109,32 @@ class TarjetaController {
         'aula': aula,
         'timeServer': FieldValue.serverTimestamp(),
       }
-    });
+    };
+
+    DocumentReference<Map<String, dynamic>> c =
+        FirebaseFirestore.instance.collection('ciclos').doc(ciclo);
+
+    DocumentReference<Map<String, dynamic>> colAsis = c
+        .collection('asistencias')
+        .doc('${titular}_${claveMateria}_${fecha}_$horario');
+
+    DocumentReference<Map<String, dynamic>> colProf = c
+        .collection('profesores')
+        .doc(titular)
+        .collection('asistencias')
+        .doc(claveMateria)
+        .collection(fecha)
+        .doc(horario);
+
+    //tiene await
+
+    colAsis.set({...valor}, SetOptions(merge: true));
+
+    colProf.set({...valor}, SetOptions(merge: true));
   }
 
   inicialzarAsistencia(GroupButtonController g) {
-    var aux =
-        asistencias.read('$titular/$claveMateria/$fecha/$horario/$codigo');
+    var aux = asistencias.read('$titular/$claveMateria/$fecha/$horario');
 
     if (aux != null) {
       if (aux['asistencia'] != null) {
@@ -165,83 +150,62 @@ class TarjetaController {
   obtenerAsistencia() async {
     Map<String, dynamic> aux = {'asistencia': null, 'hora': '', 'imagen': ''};
     await asistencias.writeIfNull(
-        '$titular/$claveMateria/$fecha/$horario/$codigo', aux);
+        '$titular/$claveMateria/$fecha/$horario', aux);
 
-    return asistencias.read('$titular/$claveMateria/$fecha/$horario/$codigo');
+    return asistencias.read('$titular/$claveMateria/$fecha/$horario');
   }
 
   //METODOS PARA TOMAR IMAGEN Y GUARDARLA
 
   addImagenAsistFS() async {
-    var asistencia = await obtenerAsistencia();
+    // var asistencia = await obtenerAsistencia();
 
-    // asistencia en coleccin 'asistencias'
+    Map<String, dynamic> valor = {
+      codigo: {
+        'imagen': obtenerImagen() == null
+            ? ''
+            : '${ciclo}_${titular}_${claveMateria}_${fecha}_${horario}_$codigo.jpg',
+      }
+    };
 
-    FirebaseFirestore db = FirebaseFirestore.instance;
-    await db
-        .collection('ciclos')
-        .doc(ciclo)
+    DocumentReference<Map<String, dynamic>> c =
+        FirebaseFirestore.instance.collection('ciclos').doc(ciclo);
+
+    DocumentReference<Map<String, dynamic>> colAsis = c
         .collection('asistencias')
-        .doc('${titular}_${claveMateria}_${fecha}_${horario}_$codigo')
-        .set(
-      {
-        codigo: {
-          'asistencia': asistencia['asistencia'],
-          'hora': asistencia['hora'],
-          'imagen': obtenerImagen() == null
-              ? ''
-              : '${ciclo}_${titular}_${claveMateria}_${fecha}_${horario}_$codigo.jpg',
-          'materia': materia,
-          'titular': titular,
-          'aula': aula,
-          'timeServer': FieldValue.serverTimestamp(),
-        }
-      },
-    );
+        .doc('${titular}_${claveMateria}_${fecha}_$horario');
 
-    //asistencia en coleccion 'profesores'
-
-    await db
-        .collection('ciclos')
-        .doc(ciclo)
+    DocumentReference<Map<String, dynamic>> colProf = c
         .collection('profesores')
         .doc(titular)
         .collection('asistencias')
         .doc(claveMateria)
         .collection(fecha)
-        .doc(horario)
-        .set({
-      codigo: {
-        'asistencia': asistencia['asistencia'],
-        'hora': asistencia['hora'],
-        'imagen': obtenerImagen() == null
-            ? ''
-            : '${ciclo}_${titular}_${claveMateria}_${fecha}_${horario}_$codigo.jpg',
-        'materia': materia,
-        'titular': titular,
-        'aula': aula,
-        'timeServer': FieldValue.serverTimestamp(),
-      }
-    });
+        .doc(horario);
+
+    colAsis.set({...valor}, SetOptions(merge: true));
+
+    colProf.set({...valor}, SetOptions(merge: true));
   }
 
-  guardarImagenStorage(File photo) async {
+  guardarImagenStorage(File photo) {
     final storage = FirebaseStorage.instance.ref();
 
     String nombre =
         'images/${ciclo}_${titular}_${claveMateria}_${fecha}_${horario}_$codigo.jpg';
 
-    await storage.child(nombre).putFile(photo);
+    //tenia await
+    storage.child(nombre).putFile(photo);
   }
 
-  tomarYGuardarImagen() async {
+  Future tomarYGuardarImagen() async {
     //inicia el controlador
     ImagenController imagenController = ImagenController();
 
     String path = await imagenController.iniciar();
 
     String ruta =
-        '$path/${ciclo}_${titular}_${claveMateria}_${fecha}_${horario}_$codigo.jpg';
+        '$path/${ciclo}_${titular}_${claveMateria}_${fecha}_$horario.jpg';
 
     if (kDebugMode) {
       print('ruta Final: $ruta');
@@ -251,27 +215,30 @@ class TarjetaController {
 
     //guarda el ruta de la imagen en el getstorage
     if (imagen != null) {
-      await guardarImagenStorage(imagen);
       var aux = await obtenerAsistencia();
       aux['imagen'] = ruta;
 
-      await asistencias.write(
-          '$titular/$claveMateria/$fecha/$horario/$codigo', aux);
+      await asistencias.write('$titular/$claveMateria/$fecha/$horario', aux);
 
-      await addImagenAsistFS();
+      //teniua await
+      // try {
+      //   guardarImagenStorage(imagen);
+      // } catch (e) {
+      //   print(e);
+      // }
+
+      await guardarImagenEnCache(ruta);
+      addImagenAsistFS();
     }
+
+    return imagen;
   }
 
-  bool existeImagen() {
-    var aux =
-        asistencias.read('$titular/$claveMateria/$fecha/$horario/$codigo');
+  bool get existeImagen {
+    var aux = asistencias.read('$titular/$claveMateria/$fecha/$horario');
     if (aux != null) {
-      if (aux['imagen'].toString().isNotEmpty) {
-        if (obtenerImagen() != null) {
-          return true;
-        } else {
-          return false;
-        }
+      if (aux['imagen'] != null && aux['imagen'] != '') {
+        return true;
       } else {
         return false;
       }
@@ -280,152 +247,25 @@ class TarjetaController {
     }
   }
 
-  obtenerImagen() {
-    var aux = asistencias
-        .read('$titular/$claveMateria/$fecha/$horario/$codigo')['imagen'];
-    if (aux.toString().isNotEmpty) {
-      return File(aux);
-    } else {
-      return null;
+  File? obtenerImagen() {
+    var aux = asistencias.read('$titular/$claveMateria/$fecha/$horario');
+    if (aux != null) {
+      if (aux['imagen'] != null && aux['imagen'] != '') {
+        return File(aux['imagen']);
+      }
     }
+    return null;
+  }
+
+  guardarImagenEnCache(String ruta) async {
+    GetStorage imagenes = GetStorage('imagenes');
+
+    await imagenes.write(
+        '${ciclo}_${titular}_${claveMateria}_${fecha}_${horario}_$codigo', {
+      'imagen': ruta,
+      'seSubio': false,
+    });
+
+    if (kDebugMode) print('SE GUARDO EN CAHCE LA IMAGEN');
   }
 }
-
- //METODOS PARA TOMAR ASISTENCIA
-
-  // agregarInasistencia() async {
-  //   FirebaseFirestore db = FirebaseFirestore.instance;
-
-  //   db
-  //       .collection('ciclos')
-  //       .doc(ciclo)
-  //       .collection('inasistencias')
-  //       .doc('${titular}_${claveMateria}_${fecha}_${horario}_$codigo')
-  //       .set({
-  //     'id_dispositivo': codigo,
-  //     'fecha': '$fechaActual $horaActual',
-  //     'titular': titular,
-  //     'claveMateria': claveMateria,
-  //     'horario': horario,
-  //     'imagen': obtenerImagen() == null
-  //         ? ''
-  //         : '${ciclo}_${titular}_${claveMateria}_${fecha}_${horario}_$codigo.jpg',
-  //     'timestamp': FieldValue.serverTimestamp(),
-  //   });
-  // }
-
-  // actualizarInasistencia() async {
-  //   FirebaseFirestore db = FirebaseFirestore.instance;
-
-  //   db
-  //       .collection('ciclos')
-  //       .doc(ciclo)
-  //       .collection('inasistencias')
-  //       .doc('${titular}_${claveMateria}_${fecha}_${horario}_$codigo')
-  //       .update({
-  //     'imagen': obtenerImagen() == null
-  //         ? ''
-  //         : '${ciclo}_${titular}_${claveMateria}_${fecha}_${horario}_$codigo.jpg',
-  //   });
-  // }
-
-  // eliminarInasistencia() async {
-  //   FirebaseFirestore db = FirebaseFirestore.instance;
-
-  //   db
-  //       .collection('ciclos')
-  //       .doc(ciclo)
-  //       .collection('inasistencias')
-  //       .doc('${titular}_${claveMateria}_${fecha}_${horario}_$codigo')
-  //       .delete();
-  // }
-
-  
-  // ponerAsistencia(bool asistencia) async {
-  //   //si ya hay asistencia no poner falta
-
-  //   var aux = await obtenerAsistencia();
-  //   aux['asistencia'] = asistencia;
-  //   aux['hora'] = horaActual;
-
-  //   print('entro');
-
-  //   // obtener la asistencia de firestore
-  //   FirebaseFirestore db = FirebaseFirestore.instance;
-  //   var asistenciaFirestore = await db
-  //       .collection('ciclos')
-  //       .doc(ciclo)
-  //       .collection('profesores')
-  //       .doc(datos['titular'])
-  //       .collection('asistencias')
-  //       .doc(claveMateria)
-  //       .collection(fecha)
-  //       .doc(horario)
-  //       .get();
-
-  //   bool? asistio;
-
-  //   if (asistenciaFirestore.exists) {
-  //     for (var dispositivo in asistenciaFirestore.data()!.keys) {
-  //       print('dispositivo: $dispositivo');
-  //       var mapaAsistencia = asistenciaFirestore.data()![dispositivo];
-  //       print(mapaAsistencia);
-  //       if (mapaAsistencia['asistencia'] != null) {
-  //         if (mapaAsistencia['asistencia']) {
-  //           asistio = true;
-  //           break;
-  //         } else {
-  //           asistio = false;
-  //         }
-  //       }
-  //     }
-  //   }
-
-  //   if (asistio != null) {
-  //     if (asistio) {
-  //       await asistencias.write(
-  //           '$titular/$claveMateria/$fecha/$horario/$codigo', aux);
-
-  //       Map<String, dynamic> mapa = {
-  //         'asistencia': aux['asistencia'],
-  //         'hora': aux['hora'],
-  //         'imagen': obtenerImagen() == null
-  //             ? ''
-  //             : '${ciclo}_${titular}_${claveMateria}_${fecha}_${horario}_$codigo.jpg',
-  //       };
-
-  //       await actualizarAsistencia(mapa);
-
-  //       //obtener la misma asistencia pero de firestore
-
-  //       // if (asistencia) {
-  //       //   print('eliminar inasistencia');
-  //       //   await eliminarInasistencia();
-  //       // } else {
-  //       //   print('agregar inasistencia');
-  //       //   await agregarInasistencia();
-  //       // }
-  //     }
-  //   }
-  // }
-
-  // actualizarAsistencia(Map<String, dynamic> aux) async {
-  //   FirebaseFirestore db = FirebaseFirestore.instance;
-
-  //   await db
-  //       .collection('ciclos')
-  //       .doc(ciclo)
-  //       .collection('profesores')
-  //       .doc(datos['titular'])
-  //       .collection('asistencias')
-  //       .doc(claveMateria)
-  //       .collection(fecha)
-  //       .doc(horario)
-  //       .set({
-  //     codigo: {
-  //       ...aux,
-  //       'timestamp': FieldValue.serverTimestamp(),
-  //     },
-  //   });
-  // }
-

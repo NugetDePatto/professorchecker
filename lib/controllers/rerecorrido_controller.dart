@@ -82,17 +82,19 @@ class RecorridoControlador {
     if (aux != null) {}
 
     await box.write('calendario', calendario);
-    print('exito');
+    if (kDebugMode) {
+      print('exito');
+    }
   }
 
-  actualizarCalendario(profesores) async {
-    GetStorage box = GetStorage();
+  // actualizarCalendario(profesores) async {
+  //   GetStorage box = GetStorage();
 
-    List<dynamic> calendario =
-        box.read('calendario') ?? [{}, {}, {}, {}, {}, {}, {}];
+  //   List<dynamic> calendario =
+  //       box.read('calendario') ?? [{}, {}, {}, {}, {}, {}, {}];
 
-    for (var p in profesores) {}
-  }
+  //   for (var p in profesores) {}
+  // }
 
   agregarHorarioACalendario() {}
 
@@ -188,7 +190,7 @@ class RecorridoControlador {
             // await crearCalendario(profesoresLinea.docs);
           }
         } catch (e) {
-          print(e);
+          if (kDebugMode) print(e);
         }
       }
 

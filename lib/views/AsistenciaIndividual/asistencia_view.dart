@@ -24,7 +24,7 @@ class _AsistenciaViewState extends State<AsistenciaView> {
 
   bool estaCargando = false;
 
-  Map<String, dynamic> coincidencias = {};
+  // Map<String, dynamic> coincidencias = {};
 
   List<dynamic> coin = [];
 
@@ -55,24 +55,24 @@ class _AsistenciaViewState extends State<AsistenciaView> {
 
       for (var auxm in auxiliares.getValues()) {
         Map<dynamic, dynamic> auxiliar = auxm as Map<dynamic, dynamic>;
-        // for (int i = 0; i < x.length; i++) {
-        //   aux.add(auxiliar['materia']);
-        // }
-
         List<dynamic> horarioAux = auxiliar['horario'];
         Map<String, dynamic> materia = auxiliar['materia'];
 
-        for (int i = 0; i < horarioAux.length; i++) {
-          if (horarioAux[i] != '-') {
-            int horaInicio = int.parse(horarioAux[i].split(':')[0]);
-            int horaFin = int.parse(horarioAux[i].split('-')[1].split(':')[0]);
+        if (materia['titular']
+            .toString()
+            .toLowerCase()
+            .contains(tProf.text.toLowerCase())) {
+          if (horarioAux[diaActual - 1] != '-') {
+            int horaInicio = int.parse(horarioAux[diaActual - 1].split(':')[0]);
+            int horaFin = int.parse(
+                horarioAux[diaActual - 1].split('-')[1].split(':')[0]);
 
             while (horaInicio < horaFin) {
               String horas = '$horaInicio:00 - ${horaInicio + 1}:00';
               if (horas == horarioActual) {
                 aux.add(materia);
               }
-              horaInicio++;
+              horaInicio = horaInicio + 1;
             }
           }
         }

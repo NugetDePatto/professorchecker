@@ -1,7 +1,5 @@
 import 'package:checadordeprofesores/constants/colors.dart';
 import 'package:checadordeprofesores/constants/routes.dart';
-import 'package:checadordeprofesores/utils/date_utils.dart';
-import 'package:checadordeprofesores/utils/secretkey.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -13,13 +11,15 @@ Future<void> main() async {
 
   await GetStorage.init();
 
+  await GetStorage.init('imagenes');
+
   await GetStorage.init('asistencias');
 
   await GetStorage.init('auxiliares');
 
   GetStorage box = GetStorage();
 
-  await box.writeIfNull('codigo', generateCode(fechaActual));
+  await box.writeIfNull('codigo', 'Tablet 01');
 
   await box.writeIfNull('ciclo', '2023 - 2 Verano');
 
