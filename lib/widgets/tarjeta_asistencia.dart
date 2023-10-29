@@ -8,9 +8,11 @@ import '../controllers/tarjeta_controller.dart';
 
 class TarjetaAsistencia extends StatefulWidget {
   final Map<String, dynamic> salon;
+  final bool isHorarioAux;
 
   const TarjetaAsistencia(
     this.salon, {
+    this.isHorarioAux = false,
     super.key,
   });
 
@@ -69,7 +71,7 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  t.isHorarioAux()
+                  widget.isHorarioAux
                       ? Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 5),

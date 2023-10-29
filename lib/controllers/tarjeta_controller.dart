@@ -54,14 +54,14 @@ class TarjetaController {
       ? true
       : false;
 
-  bool isHorarioAux() {
-    GetStorage auxiliares = GetStorage('auxiliares');
+  // bool isHorarioAux() {
+  //   GetStorage auxiliares = GetStorage('auxiliares');
 
-    var aux =
-        auxiliares.read(datos['titular'] + datos['grupo'] + datos['clave']);
+  //   var aux =
+  //       auxiliares.read(datos['titular'] + datos['grupo'] + datos['clave']);
 
-    return aux != null;
-  }
+  //   return aux != null;
+  // }
 
   //METODOS PARA LOS REPORTES
 

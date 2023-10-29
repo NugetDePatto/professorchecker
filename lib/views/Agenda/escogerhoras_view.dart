@@ -1,4 +1,8 @@
 // import 'package:checadordeprofesores/controllers/calendario_controller.dart';
+import 'dart:math';
+
+import 'package:checadordeprofesores/controllers/calendario_controller.dart';
+import 'package:checadordeprofesores/utils/responsive_utils.dart';
 import 'package:checadordeprofesores/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,38 +16,45 @@ class EscogerHorasView extends StatefulWidget {
 }
 
 class _EscogerHorasViewState extends State<EscogerHorasView> {
+  bool primeraVez = true;
+
+  bool d = false;
+
+  List<String> items = ['A', 'B', 'C', 'D', 'DEI'];
+
+  List<String> bloquesSelec = ['A', 'A', 'A', 'A', 'A', 'A', 'A'];
+
   List<String> diaSemana = [
     'Lunes',
     'Martes',
     'Miercoles',
     'Jueves',
-    'Viernes'
+    'Viernes',
+    'Sabado',
+    'Domingo'
   ];
+  List<TextEditingController> conInicio =
+      List.generate(7, (index) => TextEditingController());
 
-  Map<dynamic, dynamic> argumentos = {};
+  List<TextEditingController> conFin =
+      List.generate(7, (index) => TextEditingController());
 
-  List<dynamic> horarioOficial = [];
+  List<TextEditingController> conSalones =
+      List.generate(7, (index) => TextEditingController());
 
-  List<dynamic> horarioAuxiliar = ['', '', '', '', '', '', ''];
+  Map<dynamic, dynamic> materia = {};
 
-  List<dynamic> salonesOficial = [];
+  List<dynamic> horarioOficial = List.generate(7, (index) => '-');
 
-  List<dynamic> salonesAuxiliar = ['', '', '', '', '', '', ''];
+  List<dynamic> salonesOficial = List.generate(7, (index) => '-');
 
-  List<TextEditingController> cons =
-      List.generate(10, (index) => TextEditingController());
+  List<dynamic> horarioAuxiliar = List.generate(7, (index) => '-');
 
-  List<TextEditingController> salones =
-      List.generate(5, (index) => TextEditingController());
-
-  bool primeraVez = true;
+  List<dynamic> salonesAuxiliar = List.generate(7, (index) => '-');
 
   @override
   Widget build(BuildContext context) {
-    argumentos =
-        ModalRoute.of(context)!.settings.arguments as Map<dynamic, dynamic>;
-    inicio();
-
+    init(ModalRoute.of(context)!.settings.arguments as Map<dynamic, dynamic>);
     return Scaffold(
       appBar: getAppBar('Horario y Salon', context),
       body: Padding(
@@ -67,14 +78,17 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  getTextField(cons[0], 'Inicio'),
+                  getTextField(conInicio[0], 'Inicio'),
                   const SizedBox(width: 20),
-                  getTextField(cons[1], 'Fin'),
+                  getTextField(conFin[0], 'Fin'),
                   const SizedBox(width: 20),
-                  getTextFieldSalon(salones[0], 'Salon'),
+                  getDrop(0),
+                  const SizedBox(width: 20),
+                  getTextFieldSalon(conSalones[0], 'Salon'),
+                  if (d) getBorrador(0)
                 ],
               ),
-              const SizedBox(height: 10),
+              d ? const SizedBox(height: 10) : getBorrador(0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -86,14 +100,17 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  getTextField(cons[2], 'Inicio'),
+                  getTextField(conInicio[1], 'Inicio'),
                   const SizedBox(width: 20),
-                  getTextField(cons[3], 'Fin'),
+                  getTextField(conFin[1], 'Fin'),
                   const SizedBox(width: 20),
-                  getTextFieldSalon(salones[1], 'Salon'),
+                  getDrop(1),
+                  const SizedBox(width: 20),
+                  getTextFieldSalon(conSalones[1], 'Salon'),
+                  if (d) getBorrador(1)
                 ],
               ),
-              const SizedBox(height: 10),
+              d ? const SizedBox(height: 10) : getBorrador(1),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -105,14 +122,17 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  getTextField(cons[4], 'Inicio'),
+                  getTextField(conInicio[2], 'Inicio'),
                   const SizedBox(width: 20),
-                  getTextField(cons[5], 'Fin'),
+                  getTextField(conFin[2], 'Fin'),
                   const SizedBox(width: 20),
-                  getTextFieldSalon(salones[2], 'Salon'),
+                  getDrop(2),
+                  const SizedBox(width: 20),
+                  getTextFieldSalon(conSalones[2], 'Salon'),
+                  if (d) getBorrador(2)
                 ],
               ),
-              const SizedBox(height: 10),
+              d ? const SizedBox(height: 10) : getBorrador(2),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -124,14 +144,17 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  getTextField(cons[6], 'Inicio'),
+                  getTextField(conInicio[3], 'Inicio'),
                   const SizedBox(width: 20),
-                  getTextField(cons[7], 'Fin'),
+                  getTextField(conFin[3], 'Fin'),
                   const SizedBox(width: 20),
-                  getTextFieldSalon(salones[3], 'Salon'),
+                  getDrop(3),
+                  const SizedBox(width: 20),
+                  getTextFieldSalon(conSalones[3], 'Salon'),
+                  if (d) getBorrador(3)
                 ],
               ),
-              const SizedBox(height: 10),
+              d ? const SizedBox(height: 10) : getBorrador(3),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -143,13 +166,17 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  getTextField(cons[8], 'Inicio'),
+                  getTextField(conInicio[4], 'Inicio'),
                   const SizedBox(width: 20),
-                  getTextField(cons[9], 'Fin'),
+                  getTextField(conFin[4], 'Fin'),
                   const SizedBox(width: 20),
-                  getTextFieldSalon(salones[4], 'Salon'),
+                  getDrop(4),
+                  const SizedBox(width: 20),
+                  getTextFieldSalon(conSalones[4], 'Salon'),
+                  if (d) getBorrador(4)
                 ],
               ),
+              d ? const SizedBox(height: 10) : getBorrador(4),
               const SizedBox(height: 100),
             ],
           ),
@@ -158,9 +185,20 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          cambiarHorario().then((value) {
-            Navigator.pop(context);
-          });
+          String respuesta = capturarDatos();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(respuesta),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+          if (respuesta == 'Datos capturados correctamente') {
+            guardar().then(
+              (value) {
+                Navigator.pop(context);
+              },
+            );
+          }
         },
         icon: const Icon(Icons.save),
         label: const Text('Guardar Cambios'),
@@ -168,94 +206,222 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
     );
   }
 
-  Future cambiarHorario() async {
+  guardar() async {
     GetStorage box = GetStorage('auxiliares');
 
-    List<String> newHorario = List.generate(7, (index) => '-');
-
-    List<String> newSalones = List.generate(7, (index) => '-');
-
-    for (int i = 0; i < 10; i += 2) {
-      if (cons[i].text != '' && cons[i + 1].text != '') {
-        newHorario[(i / 2).floor()] =
-            '${cons[i].text}:00 - ${int.parse(cons[i + 1].text)}:00';
-      }
-    }
-
-    for (int i = 0; i < 5; i++) {
-      if (salones[i].text != '') {
-        newSalones[i] = salones[i].text;
-      }
-    }
-
-    String key =
-        argumentos['titular'] + argumentos['grupo'] + argumentos['clave'];
+    String key = materia['titular'] + materia['grupo'] + materia['clave'];
 
     var aux = box.read(key);
 
+    //si aux es null es porque no existe un horario en auxiliares, asi que hay que crear uno
     if (aux == null) {
-      await box.write(
-        key,
-        {
-          'horario': newHorario,
-          'materia': argumentos,
-          'salones': newSalones,
-        },
-      );
+      await box.write(key, {
+        'horario': horarioAuxiliar,
+        'materia': materia,
+        'salones': salonesAuxiliar,
+      });
     } else {
-      aux['horario'] = newHorario;
-      aux['materia'] = argumentos;
-      aux['salones'] = newSalones;
+      //si entro aqui es porque ya existe un horario en auxiliares y en el calendario, asi que hay que eliminar el anterior y agregar el nuevo
 
+      print('Eliminando horario anterior: ${aux['horario']}');
+      print('Horario nuevo: $horarioAuxiliar');
+      print('Eliminando salones anterior: ${aux['salones']}');
+      print('Salones nuevo: $salonesAuxiliar');
+
+      for (int i = 0; i < 7; i++) {
+        if (aux['horario'][i] != '-') {
+          print('Eliminando materia de hora');
+          eliminarHora(i, aux['materia'], aux['horario'][i], aux['salones'][i]);
+        } else if (aux['salones'][i] != '-') {
+          print('Eliminando materia de salon');
+          eliminarHora(i, aux['materia'], aux['horario'][i], aux['salones'][i]);
+        }
+      }
+
+      aux['horario'] = horarioAuxiliar;
+      aux['salones'] = salonesAuxiliar;
       await box.write(key, aux);
     }
 
-    // await agregarHorario(argumentos, newHorario, salones);
+    for (int i = 0; i < 7; i++) {
+      if (horarioAuxiliar[i] != '-') {
+        print('Agregando materia de hora');
+        agregarHora(i, materia, horarioAuxiliar[i], salonesAuxiliar[i]);
+      } else if (salonesAuxiliar[i] != '-' && horarioOficial[i] != '-') {
+        print('Agregando materia de salon');
+        agregarHora(i, materia, horarioOficial[i], salonesAuxiliar[i]);
+      }
+    }
   }
 
-  void inicio() {
-    horarioOficial = argumentos['horario'];
-
-    if (primeraVez) {
-      for (var x in horarioOficial) {
-        if (x != '-') {
-          salonesOficial.add(argumentos['aula']);
+  String capturarDatos() {
+    for (int i = 0; i < 7; i++) {
+      if (conInicio[i].text != '' && conFin[i].text != '') {
+        if (int.parse(conInicio[i].text) >= int.parse(conFin[i].text)) {
+          return 'La hora de inicio debe ser menor a la hora de fin';
         } else {
-          salonesOficial.add('-');
+          horarioAuxiliar[i] = '${conInicio[i].text}:00 - ${conFin[i].text}:00';
+          salonesAuxiliar[i] = materia['aula'];
+        }
+      }
+      // else {
+      //   horarioAuxiliar[i] = '-';
+      // }
+      if (conSalones[i].text != '') {
+        switch (bloquesSelec[i]) {
+          case 'A':
+            if (conSalones[i].text[0] == '1' &&
+                conSalones[i].text.length == 3) {
+              salonesAuxiliar[i] = 'A-${conSalones[i].text}';
+              horarioAuxiliar[i] = materia['horario'][i];
+            } else {
+              return 'El salon no es valido';
+            }
+            break;
+          case 'B':
+            if (conSalones[i].text[0] == '2' &&
+                conSalones[i].text.length == 3) {
+              salonesAuxiliar[i] = 'B-${conSalones[i].text}';
+              horarioAuxiliar[i] = materia['horario'][i];
+            } else {
+              return 'El salon no es valido';
+            }
+            break;
+          case 'C':
+            if (conSalones[i].text[0] == '3' &&
+                conSalones[i].text.length == 3) {
+              salonesAuxiliar[i] = 'C-${conSalones[i].text}';
+              horarioAuxiliar[i] = materia['horario'][i];
+            } else {
+              return 'El salon no es valido';
+            }
+            break;
+          case 'D':
+            if (conSalones[i].text[0] == '4' &&
+                conSalones[i].text.length == 3) {
+              salonesAuxiliar[i] = 'D-${conSalones[i].text}';
+              horarioAuxiliar[i] = materia['horario'][i];
+            } else {
+              return 'El salon no es valido';
+            }
+            break;
+          case 'DEI':
+            salonesAuxiliar[i] = 'DEI-${conSalones[i].text}';
+            horarioAuxiliar[i] = materia['horario'][i];
+            break;
+          default:
+            return 'El salon no es valido';
+        }
+      }
+      // else {
+      //   salonesAuxiliar[i] = '-';
+      // }
+    }
+    return 'Datos capturados correctamente';
+  }
+
+  init(m) {
+    if (primeraVez) {
+      d = dis(context);
+      materia = m;
+
+      //Extraigo el horario oficial y los salones oficiales de la materia para mostrarlos en pantalla
+      horarioOficial = materia['horario'];
+
+      //como no existe un lista de salones en la materia, creo una lista de salones con el mismo tamaño que el horario oficial y le asigno un '-' a cada elemento
+      for (int i = 0; i < 7; i++) {
+        if (horarioOficial[i] != '-') {
+          salonesOficial[i] = materia['aula'];
+        } else {
+          salonesOficial[i] = '-';
         }
       }
 
-      GetStorage box = GetStorage('auxiliares');
-      String key =
-          argumentos['titular'] + argumentos['grupo'] + argumentos['clave'];
-      if (box.read(key) != null) {
-        horarioAuxiliar = box.read(key)['horario'];
-        salonesAuxiliar = box.read(key)['salones'];
-      }
-      for (int i = 0; i < 10; i += 2) {
-        if (horarioAuxiliar[(i / 2).floor()] != '-' &&
-            horarioAuxiliar[(i / 2).floor()] != '') {
-          cons[i].text = horarioAuxiliar[(i / 2).floor()].split(':')[0];
-          cons[i + 1].text = horarioAuxiliar[(i / 2).floor()]
-              .split('-')[1]
-              .toString()
-              .split(':')[0];
+      //Inicializo los controladores de los textfields y los dropdowns con la informacion del horario y los salones auxiliares si es que existen
+      var aux = GetStorage('auxiliares')
+          .read(materia['titular'] + materia['grupo'] + materia['clave']);
+
+      if (aux != null) {
+        for (int i = 0; i < 7; i++) {
+          if (aux['horario'][i] != '-') {
+            conInicio[i].text = aux['horario'][i].split(':')[0];
+            conFin[i].text = aux['horario'][i].split('-')[1].split(':')[0];
+          }
+          if (aux['salones'][i] != '-') {
+            conSalones[i].text = aux['salones'][i].split('-')[1];
+            bloquesSelec[i] = aux['salones'][i].split('-')[0];
+          }
         }
       }
-
-      for (int i = 0; i < 5; i++) {
-        if (salonesAuxiliar[i] != '-' && salonesAuxiliar[i] != '') {
-          salones[i].text = salonesAuxiliar[i];
-        }
-      }
-
       primeraVez = false;
     }
   }
 
+  getBorrador(int i) {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: d ? 20 : 0,
+        top: d ? 0 : 10,
+        bottom: d ? 0 : 10,
+      ),
+      child: SizedBox(
+        width: d ? 120 : null,
+        height: d ? 60 : null,
+        child: ElevatedButton.icon(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.teal),
+          ),
+          onPressed: () {
+            setState(() {
+              conInicio[i].text = '';
+              conFin[i].text = '';
+              conSalones[i].text = '';
+              bloquesSelec[i] = materia['aula'].split('-')[0];
+            });
+          },
+          label: const Text('Borrar', style: TextStyle(color: Colors.white)),
+          icon: const Icon(Icons.cleaning_services, color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  getDrop(int i) {
+    return DropdownButton(
+      value: bloquesSelec[i],
+      onChanged: (value) {
+        setState(() {
+          bloquesSelec[i] = value.toString();
+        });
+      },
+      items: const [
+        DropdownMenuItem(
+          value: 'A',
+          child: Text('A'),
+        ),
+        DropdownMenuItem(
+          value: 'B',
+          child: Text('B'),
+        ),
+        DropdownMenuItem(
+          value: 'C',
+          child: Text('C'),
+        ),
+        DropdownMenuItem(
+          value: 'D',
+          child: Text('D'),
+        ),
+        DropdownMenuItem(
+          value: 'DEI',
+          child: Text('DEI'),
+        ),
+      ],
+    );
+  }
+
   text(String label, align) {
     return SizedBox(
-      width: 150,
+      width: d ? 150 : null,
       child: Text(
         label,
         style: const TextStyle(
@@ -279,7 +445,7 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
           labelText: label,
-          hintText: 'Ej. D-401',
+          hintText: 'Ej. 401',
         ),
         onSubmitted: (value) {
           if (onChanged != null) {
@@ -324,53 +490,74 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
     );
   }
 
+  textGen(String label, align) {
+    return SizedBox(
+      child: Text(
+        label,
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+        textAlign: align == 'i'
+            ? TextAlign.start
+            : align == 'c'
+                ? TextAlign.center
+                : TextAlign.end,
+      ),
+    );
+  }
+
   Column infoGeneral() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Materia: ${argumentos['materia']}',
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            textGen('Clave: ', 'i'),
+            Expanded(child: textGen(materia['clave'], 'd')),
+          ],
         ),
-
         const SizedBox(height: 5),
-        Text(
-          'Titular: ${argumentos['titular']}',
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            textGen('Materia: ', 'i'),
+            Expanded(child: textGen(materia['materia'], 'd')),
+          ],
         ),
-
         const SizedBox(height: 5),
-        //aula y grupo
-        Text(
-          'Aula: ${argumentos['aula']} ',
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            textGen('Titular: ', 'i'),
+            Expanded(child: textGen(materia['titular'], 'd')),
+          ],
         ),
-
         const SizedBox(height: 5),
-        Text(
-          'Grupo: ${argumentos['grupo']} ',
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+        //aula, grupo y hrsM
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            textGen('Aula: ', 'i'),
+            Expanded(child: textGen(materia['aula'], 'd')),
+          ],
         ),
-
         const SizedBox(height: 5),
-        Text(
-          'Total de horas: ${argumentos['hrsM']} ',
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            textGen('Grupo: ', 'i'),
+            Expanded(child: textGen(materia['grupo'], 'd')),
+          ],
+        ),
+        const SizedBox(height: 5),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            textGen('Horas a la Semana: ', 'i'),
+            Expanded(child: textGen(materia['hrsM'], 'd')),
+          ],
         ),
 
         const SizedBox(height: 20),

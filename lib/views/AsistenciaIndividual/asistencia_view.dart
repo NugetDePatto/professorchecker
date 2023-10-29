@@ -85,7 +85,7 @@ class _AsistenciaViewState extends State<AsistenciaView> {
         for (var bloque in salones.values) {
           for (var aula in bloque.keys) {
             if (aula.contains(tSalon.text)) {
-              Map<String, dynamic> mapa = bloque[aula];
+              Map<dynamic, dynamic> mapa = bloque[aula];
               // aux = [...mapa.values.toList()];
               aux.addAll(mapa.values.toList());
             }
