@@ -5,7 +5,7 @@ import 'package:checadordeprofesores/views/Recorrido/recorrido_view.dart';
 import 'package:checadordeprofesores/views/Agenda/agenda_view.dart';
 import 'package:checadordeprofesores/views/home/home_view.dart';
 import 'package:checadordeprofesores/views/home/options_view.dart';
-import 'package:checadordeprofesores/widgets/ReporteView.dart';
+import 'package:checadordeprofesores/widgets/reporte_view.dart';
 import 'package:flutter/material.dart';
 import '../views/Agenda/escogerhoras_view.dart';
 

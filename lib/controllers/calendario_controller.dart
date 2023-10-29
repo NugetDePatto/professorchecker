@@ -21,10 +21,6 @@ eliminarMateria(materia) async {
 
   for (int i = 0; i < 7; i++) {
     if (horarioAnterior[i].contains(':')) {
-      // print(calendario[i][horarioAnterior[i]][bloque][aula]);
-      // calendario[i][horarioAnterior[i]][bloque][aula].remove(clave);
-      // print(calendario[i][horarioAnterior[i]][bloque][aula]);
-
       int horaInicio = int.parse(horarioAnterior[i].split(':')[0]);
       int horaFin = int.parse(horarioAnterior[i].split('-')[1].split(':')[0]);
 
@@ -39,7 +35,7 @@ eliminarMateria(materia) async {
   await GetStorage().write('calendario', calendario);
 }
 
-agregarHorario(materia, horario) async {
+agregarHorario(materia, horario, salones) async {
   var calendario = GetStorage().read('calendario');
 
   var bloque = materia['aula'].toString().split('-')[0];

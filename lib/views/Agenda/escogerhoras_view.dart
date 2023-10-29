@@ -1,4 +1,4 @@
-import 'package:checadordeprofesores/controllers/calendario_controller.dart';
+// import 'package:checadordeprofesores/controllers/calendario_controller.dart';
 import 'package:checadordeprofesores/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,24 +17,18 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
     'Martes',
     'Miercoles',
     'Jueves',
-    'Viernes',
-    'Sabado',
-    'Domingo'
+    'Viernes'
   ];
 
   Map<dynamic, dynamic> argumentos = {};
 
   List<dynamic> horarioOficial = [];
 
-  List<dynamic> horarioAuxiliar = [
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-  ];
+  List<dynamic> horarioAuxiliar = ['', '', '', '', '', '', ''];
+
+  List<dynamic> salonesOficial = [];
+
+  List<dynamic> salonesAuxiliar = ['', '', '', '', '', '', ''];
 
   List<TextEditingController> cons =
       List.generate(10, (index) => TextEditingController());
@@ -44,75 +38,14 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
 
   bool primeraVez = true;
 
-  Future cambiarHorario() async {
-    GetStorage box = GetStorage('auxiliares');
-
-    List<String> newHorario = List.generate(7, (index) => '-');
-
-    for (int i = 0; i < 5; i++) {
-      if (cons[i].text != '' && cons[i + 1].text != '') {
-        newHorario[i] =
-            '${cons[i].text}:00 - ${int.parse(cons[i + 1].text)}:00';
-      }
-    }
-    String key =
-        argumentos['titular'] + argumentos['grupo'] + argumentos['clave'];
-
-    var aux = box.read(key);
-
-    if (aux == null) {
-      await box.write(
-        key,
-        {'horario': newHorario, 'materia': argumentos},
-      );
-    } else {
-      aux['horario'] = newHorario;
-      aux['materia'] = argumentos;
-      await box.write(key, aux);
-    }
-
-    //await eliminarMateria(argumentos);
-    await agregarHorario(argumentos, newHorario);
-  }
-
-  horarioEnTexField() {
-    for (int i = 0; i < 10; i + 2) {
-      // if (horarioAuxiliar[(i / 2).floor()] != '-') {
-      //   cons[i].text = horarioAuxiliar[(i / 2).floor()].split(':')[0];
-      //   cons[i + 1].text = horarioAuxiliar[(i / 2).floor()].split(':')[1];
-      // }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     argumentos =
         ModalRoute.of(context)!.settings.arguments as Map<dynamic, dynamic>;
-
-    horarioOficial = argumentos['horario'];
-
-    if (primeraVez) {
-      GetStorage box = GetStorage('auxiliares');
-      String key =
-          argumentos['titular'] + argumentos['grupo'] + argumentos['clave'];
-      if (box.read(key) != null) {
-        horarioAuxiliar = box.read(key)['horario'];
-      }
-      for (int i = 0; i < 10; i += 2) {
-        if (horarioAuxiliar[(i / 2).floor()] != '-' &&
-            horarioAuxiliar[(i / 2).floor()] != '') {
-          cons[i].text = horarioAuxiliar[(i / 2).floor()].split(':')[0];
-          cons[i + 1].text = horarioAuxiliar[(i / 2).floor()]
-              .split('-')[1]
-              .toString()
-              .split(':')[0];
-        }
-      }
-      primeraVez = false;
-    }
+    inicio();
 
     return Scaffold(
-      appBar: getAppBar('Añadir Horario', context),
+      appBar: getAppBar('Horario y Salon', context),
       body: Padding(
         padding: const EdgeInsets.only(
           left: 20,
@@ -123,24 +56,13 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
           child: Column(
             children: [
               infoGeneral(),
-              const Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Horario a añadir',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [text('Lunes:'), text(horarioOficial[0])],
+                children: [
+                  text('Lunes:', 'i'),
+                  text(horarioOficial[0], 'c'),
+                  text(salonesOficial[0], 'd')
+                ],
               ),
               const SizedBox(height: 10),
               Row(
@@ -149,13 +71,17 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
                   const SizedBox(width: 20),
                   getTextField(cons[1], 'Fin'),
                   const SizedBox(width: 20),
-                  getTextField(salones[0], 'Salon'),
+                  getTextFieldSalon(salones[0], 'Salon'),
                 ],
               ),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [text('Martes:'), text(horarioOficial[1])],
+                children: [
+                  text('Martes:', 'i'),
+                  text(horarioOficial[1], 'c'),
+                  text(salonesOficial[1], 'd')
+                ],
               ),
               const SizedBox(height: 10),
               Row(
@@ -164,13 +90,17 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
                   const SizedBox(width: 20),
                   getTextField(cons[3], 'Fin'),
                   const SizedBox(width: 20),
-                  getTextField(salones[1], 'Salon'),
+                  getTextFieldSalon(salones[1], 'Salon'),
                 ],
               ),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [text('Miercoles:'), text(horarioOficial[2])],
+                children: [
+                  text('Miercoles:', 'i'),
+                  text(horarioOficial[2], 'c'),
+                  text(salonesOficial[2], 'd')
+                ],
               ),
               const SizedBox(height: 10),
               Row(
@@ -179,13 +109,17 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
                   const SizedBox(width: 20),
                   getTextField(cons[5], 'Fin'),
                   const SizedBox(width: 20),
-                  getTextField(salones[2], 'Salon'),
+                  getTextFieldSalon(salones[2], 'Salon'),
                 ],
               ),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [text('Jueves:'), text(horarioOficial[3])],
+                children: [
+                  text('Jueves:', 'i'),
+                  text(horarioOficial[3], 'c'),
+                  text(salonesOficial[3], 'd')
+                ],
               ),
               const SizedBox(height: 10),
               Row(
@@ -194,13 +128,17 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
                   const SizedBox(width: 20),
                   getTextField(cons[7], 'Fin'),
                   const SizedBox(width: 20),
-                  getTextField(salones[3], 'Salon'),
+                  getTextFieldSalon(salones[3], 'Salon'),
                 ],
               ),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [text('Viernes:'), text(horarioOficial[4])],
+                children: [
+                  text('Viernes:', 'i'),
+                  text(horarioOficial[4], 'c'),
+                  text(salonesOficial[4], 'd')
+                ],
               ),
               const SizedBox(height: 10),
               Row(
@@ -209,7 +147,7 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
                   const SizedBox(width: 20),
                   getTextField(cons[9], 'Fin'),
                   const SizedBox(width: 20),
-                  getTextField(salones[4], 'Salon'),
+                  getTextFieldSalon(salones[4], 'Salon'),
                 ],
               ),
               const SizedBox(height: 100),
@@ -230,12 +168,129 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
     );
   }
 
-  Text text(String label) {
-    return Text(
-      label,
-      style: const TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
+  Future cambiarHorario() async {
+    GetStorage box = GetStorage('auxiliares');
+
+    List<String> newHorario = List.generate(7, (index) => '-');
+
+    List<String> newSalones = List.generate(7, (index) => '-');
+
+    for (int i = 0; i < 10; i += 2) {
+      if (cons[i].text != '' && cons[i + 1].text != '') {
+        newHorario[(i / 2).floor()] =
+            '${cons[i].text}:00 - ${int.parse(cons[i + 1].text)}:00';
+      }
+    }
+
+    for (int i = 0; i < 5; i++) {
+      if (salones[i].text != '') {
+        newSalones[i] = salones[i].text;
+      }
+    }
+
+    String key =
+        argumentos['titular'] + argumentos['grupo'] + argumentos['clave'];
+
+    var aux = box.read(key);
+
+    if (aux == null) {
+      await box.write(
+        key,
+        {
+          'horario': newHorario,
+          'materia': argumentos,
+          'salones': newSalones,
+        },
+      );
+    } else {
+      aux['horario'] = newHorario;
+      aux['materia'] = argumentos;
+      aux['salones'] = newSalones;
+
+      await box.write(key, aux);
+    }
+
+    // await agregarHorario(argumentos, newHorario, salones);
+  }
+
+  void inicio() {
+    horarioOficial = argumentos['horario'];
+
+    if (primeraVez) {
+      for (var x in horarioOficial) {
+        if (x != '-') {
+          salonesOficial.add(argumentos['aula']);
+        } else {
+          salonesOficial.add('-');
+        }
+      }
+
+      GetStorage box = GetStorage('auxiliares');
+      String key =
+          argumentos['titular'] + argumentos['grupo'] + argumentos['clave'];
+      if (box.read(key) != null) {
+        horarioAuxiliar = box.read(key)['horario'];
+        salonesAuxiliar = box.read(key)['salones'];
+      }
+      for (int i = 0; i < 10; i += 2) {
+        if (horarioAuxiliar[(i / 2).floor()] != '-' &&
+            horarioAuxiliar[(i / 2).floor()] != '') {
+          cons[i].text = horarioAuxiliar[(i / 2).floor()].split(':')[0];
+          cons[i + 1].text = horarioAuxiliar[(i / 2).floor()]
+              .split('-')[1]
+              .toString()
+              .split(':')[0];
+        }
+      }
+
+      for (int i = 0; i < 5; i++) {
+        if (salonesAuxiliar[i] != '-' && salonesAuxiliar[i] != '') {
+          salones[i].text = salonesAuxiliar[i];
+        }
+      }
+
+      primeraVez = false;
+    }
+  }
+
+  text(String label, align) {
+    return SizedBox(
+      width: 150,
+      child: Text(
+        label,
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+        textAlign: align == 'i'
+            ? TextAlign.start
+            : align == 'c'
+                ? TextAlign.center
+                : TextAlign.end,
+      ),
+    );
+  }
+
+  getTextFieldSalon(TextEditingController c, String label,
+      {Function? onChanged}) {
+    return Expanded(
+      child: TextField(
+        controller: c,
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: label,
+          hintText: 'Ej. D-401',
+        ),
+        onSubmitted: (value) {
+          if (onChanged != null) {
+            onChanged();
+          }
+        },
+        onTapOutside: (event) {
+          if (onChanged != null) {
+            onChanged();
+          }
+        },
       ),
     );
   }
