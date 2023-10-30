@@ -1,6 +1,8 @@
+import 'package:checadordeprofesores/utils/date_utils.dart';
 import 'package:checadordeprofesores/utils/responsive_utils.dart';
 import 'package:checadordeprofesores/views/Recorrido/vermas_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:group_button/group_button.dart';
 
 import '../controllers/rerecorrido_controller.dart';
@@ -25,11 +27,27 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
   GroupButtonController g = GroupButtonController();
   late TarjetaController t;
 
+  late String aula;
+  String suplente = 'Sin Suplente';
+
+  bool esAuxiliar = false;
+
   @override
   void initState() {
     super.initState();
     t = TarjetaController(datos: widget.salon);
     t.inicialzarAsistencia(g);
+
+    GetStorage box = GetStorage('auxiliares');
+    String key =
+        widget.salon['titular'] + widget.salon['grupo'] + widget.salon['clave'];
+
+    if (box.read(key) != null) {
+      aula = box.read(key)['salones'][diaActual - 1];
+      suplente = box.read(key)['suplente'];
+    } else {
+      aula = widget.salon['aula'];
+    }
   }
 
   @override
@@ -55,7 +73,7 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
               child: Column(
                 children: [
                   Text(
-                    widget.salon['aula'].toString().split('-')[1],
+                    aula.split('-')[1],
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -71,7 +89,7 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  widget.isHorarioAux
+                  t.isHorarioAux()
                       ? Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 5),
@@ -93,10 +111,10 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
                       ),
                     ),
                   ),
-                  widget.salon['suplente'].toString() == 'Sin suplente'
+                  suplente == 'Sin Suplente'
                       ? const SizedBox()
                       : Text(
-                          'SUPLE: ${widget.salon['suplente'].toString().toUpperCase()}',
+                          'SUPLENTE: ${suplente.toString().toUpperCase()}',
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: d ? 24 : 18,

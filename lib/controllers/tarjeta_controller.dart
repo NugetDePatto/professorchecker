@@ -54,14 +54,22 @@ class TarjetaController {
       ? true
       : false;
 
-  // bool isHorarioAux() {
-  //   GetStorage auxiliares = GetStorage('auxiliares');
+  bool isHorarioAux() {
+    GetStorage auxiliares = GetStorage('auxiliares');
 
-  //   var aux =
-  //       auxiliares.read(datos['titular'] + datos['grupo'] + datos['clave']);
+    var aux =
+        auxiliares.read(datos['titular'] + datos['grupo'] + datos['clave']);
 
-  //   return aux != null;
-  // }
+    if (aux != null) {
+      if (aux['horario'][diaActual - 1] == horarioActual) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
 
   //METODOS PARA LOS REPORTES
 

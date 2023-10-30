@@ -1,6 +1,3 @@
-// import 'package:checadordeprofesores/controllers/calendario_controller.dart';
-import 'dart:math';
-
 import 'package:checadordeprofesores/controllers/calendario_controller.dart';
 import 'package:checadordeprofesores/utils/responsive_utils.dart';
 import 'package:checadordeprofesores/widgets/app_bar.dart';
@@ -42,6 +39,8 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
   List<TextEditingController> conSalones =
       List.generate(7, (index) => TextEditingController());
 
+  TextEditingController conSuplente = TextEditingController();
+
   Map<dynamic, dynamic> materia = {};
 
   List<dynamic> horarioOficial = List.generate(7, (index) => '-');
@@ -56,7 +55,7 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
   Widget build(BuildContext context) {
     init(ModalRoute.of(context)!.settings.arguments as Map<dynamic, dynamic>);
     return Scaffold(
-      appBar: getAppBar('Horario y Salon', context),
+      appBar: getAppBar('Horario y Salon', context, leading: true),
       body: Padding(
         padding: const EdgeInsets.only(
           left: 20,
@@ -67,6 +66,51 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
           child: Column(
             children: [
               infoGeneral(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Suplente:',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: TextField(
+                      controller: conSuplente,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Suplente',
+                        hintText: 'Ej. Juan Perez',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  SizedBox(
+                    height: 60,
+                    width: d ? 120 : null,
+                    child: ElevatedButton.icon(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Colors.teal),
+                      ),
+                      onPressed: () {
+                        conSuplente.text = '';
+                      },
+                      label: const Text(
+                        'Borrar',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      icon: const Icon(
+                        Icons.cleaning_services,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -219,42 +263,38 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
         'horario': horarioAuxiliar,
         'materia': materia,
         'salones': salonesAuxiliar,
+        'suplente': conSuplente.text,
       });
     } else {
       //si entro aqui es porque ya existe un horario en auxiliares y en el calendario, asi que hay que eliminar el anterior y agregar el nuevo
 
-      print('Eliminando horario anterior: ${aux['horario']}');
-      print('Horario nuevo: $horarioAuxiliar');
-      print('Eliminando salones anterior: ${aux['salones']}');
-      print('Salones nuevo: $salonesAuxiliar');
-
       for (int i = 0; i < 7; i++) {
         if (aux['horario'][i] != '-') {
-          print('Eliminando materia de hora');
           eliminarHora(i, aux['materia'], aux['horario'][i], aux['salones'][i]);
         } else if (aux['salones'][i] != '-') {
-          print('Eliminando materia de salon');
           eliminarHora(i, aux['materia'], aux['horario'][i], aux['salones'][i]);
         }
       }
 
       aux['horario'] = horarioAuxiliar;
       aux['salones'] = salonesAuxiliar;
+      aux['suplente'] = conSuplente.text;
       await box.write(key, aux);
     }
 
     for (int i = 0; i < 7; i++) {
       if (horarioAuxiliar[i] != '-') {
-        print('Agregando materia de hora');
         agregarHora(i, materia, horarioAuxiliar[i], salonesAuxiliar[i]);
       } else if (salonesAuxiliar[i] != '-' && horarioOficial[i] != '-') {
-        print('Agregando materia de salon');
         agregarHora(i, materia, horarioOficial[i], salonesAuxiliar[i]);
       }
     }
   }
 
   String capturarDatos() {
+    if (conSuplente.text == '') {
+      conSuplente.text = 'Sin Suplente';
+    }
     for (int i = 0; i < 7; i++) {
       if (conInicio[i].text != '' && conFin[i].text != '') {
         if (int.parse(conInicio[i].text) >= int.parse(conFin[i].text)) {
@@ -273,7 +313,9 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
             if (conSalones[i].text[0] == '1' &&
                 conSalones[i].text.length == 3) {
               salonesAuxiliar[i] = 'A-${conSalones[i].text}';
-              horarioAuxiliar[i] = materia['horario'][i];
+              if (horarioAuxiliar[i] == '-') {
+                horarioAuxiliar[i] = materia['horario'][i];
+              }
             } else {
               return 'El salon no es valido';
             }
@@ -282,7 +324,9 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
             if (conSalones[i].text[0] == '2' &&
                 conSalones[i].text.length == 3) {
               salonesAuxiliar[i] = 'B-${conSalones[i].text}';
-              horarioAuxiliar[i] = materia['horario'][i];
+              if (horarioAuxiliar[i] == '-') {
+                horarioAuxiliar[i] = materia['horario'][i];
+              }
             } else {
               return 'El salon no es valido';
             }
@@ -291,7 +335,9 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
             if (conSalones[i].text[0] == '3' &&
                 conSalones[i].text.length == 3) {
               salonesAuxiliar[i] = 'C-${conSalones[i].text}';
-              horarioAuxiliar[i] = materia['horario'][i];
+              if (horarioAuxiliar[i] == '-') {
+                horarioAuxiliar[i] = materia['horario'][i];
+              }
             } else {
               return 'El salon no es valido';
             }
@@ -300,14 +346,18 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
             if (conSalones[i].text[0] == '4' &&
                 conSalones[i].text.length == 3) {
               salonesAuxiliar[i] = 'D-${conSalones[i].text}';
-              horarioAuxiliar[i] = materia['horario'][i];
+              if (horarioAuxiliar[i] == '-') {
+                horarioAuxiliar[i] = materia['horario'][i];
+              }
             } else {
               return 'El salon no es valido';
             }
             break;
           case 'DEI':
             salonesAuxiliar[i] = 'DEI-${conSalones[i].text}';
-            horarioAuxiliar[i] = materia['horario'][i];
+            if (horarioAuxiliar[i] == '-') {
+              horarioAuxiliar[i] = materia['horario'][i];
+            }
             break;
           default:
             return 'El salon no es valido';
@@ -341,7 +391,9 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
       var aux = GetStorage('auxiliares')
           .read(materia['titular'] + materia['grupo'] + materia['clave']);
 
+      conSuplente.text = 'Sin Suplente';
       if (aux != null) {
+        conSuplente.text = aux['suplente'];
         for (int i = 0; i < 7; i++) {
           if (aux['horario'][i] != '-') {
             conInicio[i].text = aux['horario'][i].split(':')[0];
@@ -350,6 +402,8 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
           if (aux['salones'][i] != '-') {
             conSalones[i].text = aux['salones'][i].split('-')[1];
             bloquesSelec[i] = aux['salones'][i].split('-')[0];
+          } else if (materia['horario'][i] != '-') {
+            bloquesSelec[i] = materia['aula'].split('-')[0];
           }
         }
       }

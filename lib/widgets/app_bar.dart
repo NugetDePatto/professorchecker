@@ -35,7 +35,7 @@ PreferredSizeWidget getAppBar(
                 context: context,
                 builder: (context) => AlertDialog(
                   title: const Text(
-                    '¿Quiere salir a la pantalla de inicio?',
+                    '¿Deseas salir sin guardar los cambios?',
                     textAlign: TextAlign.center,
                   ),
                   actionsAlignment: MainAxisAlignment.spaceEvenly,

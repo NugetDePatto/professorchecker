@@ -32,11 +32,7 @@ class _RecorridoViewState extends State<RecorridoView> {
     b.selectIndex(i);
     PageController p = PageController(initialPage: i);
     return Scaffold(
-      appBar: getAppBar(
-        'Lista de Asistencia',
-        context,
-        leading: true,
-      ),
+      appBar: getAppBar('Lista de Asistencia', context),
       body: StreamBuilder(
         stream: c.stremFire,
         builder: (context, snapshot) {

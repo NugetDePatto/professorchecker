@@ -1,6 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 
-verMasDialog(BuildContext context, Map<String, dynamic> info) {
+verMasDialog(BuildContext context, Map<dynamic, dynamic> info) {
+  GetStorage box = GetStorage('auxiliares');
+  String key = info['titular'] + info['grupo'] + info['clave'];
+
+  List<dynamic> horarioAux = [];
+  List<dynamic> salonesAux = [];
+  String suplente = 'Sin Suplente';
+
+  if (box.read(key) != null) {
+    horarioAux = box.read(key)['horario'];
+    salonesAux = box.read(key)['salones'];
+    suplente = box.read(key)['suplente'];
+  }
+
   List<String> dias = [
     'Lunes',
     'Martes',
@@ -34,7 +48,7 @@ verMasDialog(BuildContext context, Map<String, dynamic> info) {
               const Divider(),
               Text('Materia:  ${info['materia']}'),
               Text('Titular:  ${info['titular']}'),
-              Text('Suplente:  ${info['suplente'].toString().toUpperCase()}'),
+              Text('Suplente:  ${suplente.toString().toUpperCase()}'),
               const Divider(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -64,31 +78,54 @@ verMasDialog(BuildContext context, Map<String, dynamic> info) {
                 children: [
                   Expanded(
                     child: Text(
-                      'Horario:',
+                      'Horario Oficial:',
                       textAlign: TextAlign.center,
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 5),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Wrap(
                 children: [
-                  Column(
-                    children: [
-                      for (int i = 0; i < info['horario'].length; i++)
-                        if (info['horario'][i] != '-')
-                          Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Column(
-                              children: [
-                                Text(dias[i]),
-                                Text(info['horario'][i]),
-                              ],
-                            ),
-                          ),
-                    ],
+                  for (int i = 0; i < info['horario'].length; i++)
+                    if (info['horario'][i] != '-')
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Column(
+                          children: [
+                            Text(dias[i]),
+                            Text(info['horario'][i]),
+                          ],
+                        ),
+                      ),
+                ],
+              ),
+              const Divider(),
+              const Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Horario Auxiliar:',
+                      textAlign: TextAlign.center,
+                    ),
                   ),
+                ],
+              ),
+              const SizedBox(height: 5),
+              Wrap(
+                children: [
+                  for (int i = 0; i < horarioAux.length; i++)
+                    if (horarioAux[i] != '-')
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Column(
+                          children: [
+                            Text(dias[i]),
+                            Text(horarioAux[i]),
+                            Text(salonesAux[i]),
+                          ],
+                        ),
+                      ),
                 ],
               ),
               const Divider(),
