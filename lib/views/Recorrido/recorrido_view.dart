@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:checadordeprofesores/utils/responsive_utils.dart';
 import 'package:checadordeprofesores/widgets/app_bar.dart';
 import 'package:checadordeprofesores/widgets/tarjeta_asistencia.dart';
@@ -26,8 +28,19 @@ class _RecorridoViewState extends State<RecorridoView> {
     iniciarhorarioActual();
   }
 
+  int horaBase = DateTime.now().hour;
+
   @override
   Widget build(BuildContext context) {
+    Future.doWhile(() async {
+      await Future.delayed(const Duration(seconds: 5));
+      if (horaBase != DateTime.now().hour) {
+        setState(() {});
+        horaBase = DateTime.now().hour;
+      }
+      return true;
+    });
+
     bool d = dis(context);
     b.selectIndex(i);
     PageController p = PageController(initialPage: i);

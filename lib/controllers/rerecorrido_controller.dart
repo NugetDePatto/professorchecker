@@ -27,6 +27,7 @@ class RecorridoControlador {
     List<Map<String, dynamic>> calendario = [{}, {}, {}, {}, {}, {}, {}];
 
     for (var p in profesores) {
+      print(p.data());
       for (var materia in p.data()['materias'].values) {
         String aula = materia['aula'];
         String bloque = aula.split('-')[0];
@@ -106,7 +107,7 @@ class RecorridoControlador {
     int mesActual = DateTime.now().month;
 
     if (kDebugMode) {
-      return 'TEST - 2023 - 3 Otoño';
+      return '2023 - 3 Otoño';
     } else if (mesActual >= 1 && mesActual <= 5) {
       return '${DateTime.now().year} - 1 Primavera';
     } else if (mesActual >= 6 && mesActual <= 7) {
@@ -130,9 +131,11 @@ class RecorridoControlador {
     var box = GetStorage();
 
     var cacheTime = box.read('cacheTime');
+    print('Entro');
 
     //Su cache es null, es porque es la primera vez que se ejecuta la app
     if (cacheTime == null) {
+      print('Entro 1');
       var profesoresServer = await db
           .collection("ciclos")
           .doc(ciclo)
@@ -149,8 +152,11 @@ class RecorridoControlador {
 
       await crearCalendario(profesoresServer.docs);
 
+      print('termino 1');
+
       return profesoresServer.docs;
     } else {
+      print('Entro 2');
       //Mi cache no es null, es porque ya se ejecuto la app antes
       if (kDebugMode) {
         print('Mi cache actual: $cacheTime');
@@ -211,6 +217,8 @@ class RecorridoControlador {
       if (seActualizo) {
         await crearCalendario(profesores.docs);
       }
+
+      print('termino 2');
 
       return profesores.docs;
     }
