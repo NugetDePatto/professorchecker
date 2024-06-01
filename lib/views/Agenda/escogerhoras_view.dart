@@ -284,8 +284,10 @@ class _EscogerHorasViewState extends State<EscogerHorasView> {
 
     for (int i = 0; i < 7; i++) {
       if (horarioAuxiliar[i] != '-') {
+        print(salonesAuxiliar[i]);
         agregarHora(i, materia, horarioAuxiliar[i], salonesAuxiliar[i]);
       } else if (salonesAuxiliar[i] != '-' && horarioOficial[i] != '-') {
+        print(salonesAuxiliar[i]);
         agregarHora(i, materia, horarioOficial[i], salonesAuxiliar[i]);
       }
     }

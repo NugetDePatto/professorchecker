@@ -53,7 +53,7 @@ class _TarjetaAsistenciaState extends State<TarjetaAsistencia> {
   @override
   Widget build(BuildContext context) {
     bool d = dis(context);
-
+    print(aula.split('-')[1]);
     return GestureDetector(
       onTap: () {
         verMasDialog(context, widget.salon);

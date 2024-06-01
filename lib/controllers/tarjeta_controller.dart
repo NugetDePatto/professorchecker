@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:checadordeprofesores/utils/ciclo_utils.dart';
 import 'package:checadordeprofesores/utils/secretkey.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,23 +15,7 @@ class TarjetaController {
 
   TarjetaController({required this.datos});
 
-  String get ciclo {
-    // enero a mayo = primavera
-    // junio a julio = verano
-    // agosto a diciembre = otoño
-
-    int mesActual = DateTime.now().month;
-
-    if (kDebugMode) {
-      return '2023 - 3 Otoño';
-    } else if (mesActual >= 1 && mesActual <= 5) {
-      return '${DateTime.now().year} - 1 Primavera';
-    } else if (mesActual >= 6 && mesActual <= 7) {
-      return '${DateTime.now().year} - 2 Verano';
-    } else {
-      return '${DateTime.now().year} - 3 Otoño';
-    }
-  }
+  String get ciclo => ciclo_util;
 
   String get titular => datos['titular'].toString().trim();
 
@@ -105,6 +90,8 @@ class TarjetaController {
     await GetStorage('asistencias')
         .write('$titular/$claveMateria/$fecha/$horario', asistencia);
 
+    String idFirebase = '${titular}_${claveMateria}_${fecha}_$horario';
+
     Map<String, dynamic> valor = {
       codigo: {
         'asistencia': asistio,
@@ -112,33 +99,43 @@ class TarjetaController {
         'imagen': obtenerImagen() == null
             ? ''
             : '${ciclo}_${titular}_${claveMateria}_${fecha}_${horario}_$codigo.jpg',
-        'materia': materia,
-        'titular': titular,
-        'aula': aula,
         'timeServer': FieldValue.serverTimestamp(),
-      }
+      },
+      'idAsistencia': idFirebase,
+      'idProfesor': titular,
+      'grupo': datos['grupo'],
+      'idMateria': claveMateria,
+      'fecha': fecha,
+      'horario': horario,
+      // 'materia': materia,
+      // 'titular': titular,
+      // 'aula': aula,
     };
 
     DocumentReference<Map<String, dynamic>> c =
         FirebaseFirestore.instance.collection('ciclos').doc(ciclo);
 
-    DocumentReference<Map<String, dynamic>> colAsis = c
-        .collection('asistencias')
-        .doc('${titular}_${claveMateria}_${fecha}_$horario');
+    DocumentReference<Map<String, dynamic>> colAsis =
+        c.collection('asistencias').doc(idFirebase);
 
-    DocumentReference<Map<String, dynamic>> colProf = c
-        .collection('profesores')
-        .doc(titular)
-        .collection('asistencias')
-        .doc(claveMateria)
-        .collection(fecha)
-        .doc(horario);
+    // DocumentReference<Map<String, dynamic>> colProf = c
+    //     .collection('profesores')
+    //     .doc(titular)
+    //     .collection('asistencias')
+    //     .doc(claveMateria)
+    //     .collection(fecha)
+    //     .doc(horario);
 
     //tiene await
 
     colAsis.set({...valor}, SetOptions(merge: true));
 
-    colProf.set({...valor}, SetOptions(merge: true));
+    if (kDebugMode) {
+      print(ciclo);
+      print(idFirebase);
+    }
+
+    // colProf.set({...valor}, SetOptions(merge: true));
   }
 
   inicialzarAsistencia(GroupButtonController g) {
@@ -183,17 +180,17 @@ class TarjetaController {
         .collection('asistencias')
         .doc('${titular}_${claveMateria}_${fecha}_$horario');
 
-    DocumentReference<Map<String, dynamic>> colProf = c
-        .collection('profesores')
-        .doc(titular)
-        .collection('asistencias')
-        .doc(claveMateria)
-        .collection(fecha)
-        .doc(horario);
+    // DocumentReference<Map<String, dynamic>> colProf = c
+    //     .collection('profesores')
+    //     .doc(titular)
+    //     .collection('asistencias')
+    //     .doc(claveMateria)
+    //     .collection(fecha)
+    //     .doc(horario);
 
     colAsis.set({...valor}, SetOptions(merge: true));
 
-    colProf.set({...valor}, SetOptions(merge: true));
+    // colProf.set({...valor}, SetOptions(merge: true));
   }
 
   guardarImagenStorage(File photo) {
@@ -227,13 +224,6 @@ class TarjetaController {
       aux['imagen'] = ruta;
 
       await asistencias.write('$titular/$claveMateria/$fecha/$horario', aux);
-
-      //teniua await
-      // try {
-      //   guardarImagenStorage(imagen);
-      // } catch (e) {
-      //   print(e);
-      // }
 
       await guardarImagenEnCache(ruta);
       addImagenAsistFS();
