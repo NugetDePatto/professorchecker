@@ -1,3 +1,4 @@
+import 'package:checadordeprofesores/core/utlis/timetable_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -10,6 +11,16 @@ class TimetableService {
   var timetableBox = GetStorage(GetStorageKey.timetable);
 
   get getTimetable => timetableBox.read(cycleUtil);
+
+  Map getBlock(String interval, String block) {
+    var blockMap = getTimetable[dayOfWeek][interval];
+
+    if (blockMap != null) {
+      return blockMap[block] ?? {};
+    } else {
+      return {};
+    }
+  }
 
   Future<String> updateProfessorsTimetable() async {
     GetOptions fromCache = const GetOptions(source: Source.cache);

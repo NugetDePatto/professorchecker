@@ -8,6 +8,7 @@ import '../controllers/recorrido_controller.dart';
 import '../widgets/blocks_buttons/blocks_buttons_view.dart';
 import '../widgets/interval_adjuster/interval_adjuster_controller.dart';
 import '../widgets/interval_adjuster/interval_adjuster_view.dart';
+import '../widgets/subject_card/subject_car_widget.dart';
 
 class RecorridoView extends GetView<RecorridoController> {
   const RecorridoView({Key? key}) : super(key: key);
@@ -40,10 +41,12 @@ class RecorridoView extends GetView<RecorridoController> {
               child: controller.timetableIsReady.isTrue
                   ? ListView(
                       children: [
-                        Text(
-                          controller.timetable.toString(),
-                          style: const TextStyle(color: Colors.white),
-                        ),
+                        for (var classroom in controller.getBlock.entries)
+                          for (var subject in classroom.value.entries)
+                            SubjectCarWidget(
+                              classroom: classroom.key,
+                              subject: subject,
+                            ),
                       ],
                     )
                   : const Center(
