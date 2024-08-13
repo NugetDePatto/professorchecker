@@ -1,5 +1,6 @@
-import 'package:checadordeprofesores/normal/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
+
+import '../utils/responsive_utils.dart';
 
 PreferredSizeWidget getAppBar(
   String title,

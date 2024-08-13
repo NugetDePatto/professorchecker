@@ -1,7 +1,8 @@
-import 'package:checadordeprofesores/normal/controllers/tarjeta_controller.dart';
-import 'package:checadordeprofesores/normal/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:group_button/group_button.dart';
+
+import '../controllers/tarjeta_controller.dart';
+import 'app_bar.dart';
 
 class ReporteView extends StatefulWidget {
   const ReporteView({super.key});

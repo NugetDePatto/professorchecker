@@ -1,5 +1,6 @@
-import 'package:checadordeprofesores/normal/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
+
+import '../../widgets/app_bar.dart';
 
 class CambiarSalonView extends StatefulWidget {
   const CambiarSalonView({super.key});

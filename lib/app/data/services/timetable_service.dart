@@ -7,14 +7,15 @@ import '../../../core/utlis/is_conected_internet_utils.dart';
 import '../../../core/utlis/print_utils.dart';
 
 class TimetableService {
-  GetStorage timetableBox = GetStorage(GetStorageKey.timetable);
+  var timetableBox = GetStorage(GetStorageKey.timetable);
 
-  void updateProfessorsTimetable() async {
+  get getTimetable => timetableBox.read(cycleUtil);
+
+  Future<String> updateProfessorsTimetable() async {
     GetOptions fromCache = const GetOptions(source: Source.cache);
     GetOptions fromServer = const GetOptions(source: Source.server);
 
-    bool timetableHasData =
-        GetStorage(GetStorageKey.timetable).hasData(cycleUtil);
+    bool timetableHasData = timetableBox.hasData(cycleUtil);
 
     var reference = FirebaseFirestore.instance
         .collection('ciclos')
@@ -25,17 +26,23 @@ class TimetableService {
     var lastUpdateCache = utilsBox.read('lastUpdateCache');
 
     if (lastUpdateCache == null || timetableHasData == false) {
-      var professorsFromServer = await reference
-          .orderBy(
-            'lastUpdate',
-            descending: true,
-          )
-          .get(fromServer);
+      try {
+        var professorsFromServer = await reference
+            .orderBy(
+              'lastUpdate',
+              descending: true,
+            )
+            .get(fromServer);
 
-      await utilsBox.write('latestProfessorsUpdate',
-          professorsFromServer.docs[0].data()['lastUpdate']);
+        await utilsBox.write('lastUpdateCache',
+            professorsFromServer.docs[0].data()['lastUpdate'].toString());
 
-      // aqui estaria lo de creear calendario con los datos de los profesores del server
+        await buildTimetable(professorsFromServer.docs);
+
+        return 'Calendario creado';
+      } catch (e) {
+        return 'No se pudo crear el horario, revisa tu conexión a internet';
+      }
     } else if (await isConectedInternet()) {
       try {
         var professorsFromServer = await reference
@@ -45,23 +52,26 @@ class TimetableService {
             )
             .get(fromServer);
 
-        bool isUpdatedProfessor = professorsFromServer.docs.isNotEmpty;
-
-        if (isUpdatedProfessor) {
+        if (professorsFromServer.docs.isNotEmpty) {
           var professorsFromCache = await reference.get(fromCache);
-          // aqui estaria lo de creear calendario con los datos de los profesores del cache
-          printD(professorsFromCache.docs.length);
+
+          await buildTimetable(professorsFromCache.docs);
 
           await utilsBox.write('lastUpdateCache',
               professorsFromServer.docs[0].data()['lastUpdate']);
+
+          return 'Calendario actualizado';
         }
       } catch (e) {
         printD(e);
+        return 'No se pudo actualizar el horario, revisa tu conexión a internet o intenta más tarde';
       }
     }
+
+    return 'No hay cambios en el horario';
   }
 
-  void buildTimetable(var professors) async {
+  buildTimetable(professors) async {
     List<Map<String, dynamic>> timetable = [{}, {}, {}, {}, {}, {}, {}];
 
     for (var professor in professors) {
@@ -83,6 +93,8 @@ class TimetableService {
               timetable[day][interval].putIfAbsent(block, () => {});
               timetable[day][interval][block].putIfAbsent(classroom, () => {});
               timetable[day][interval][block][classroom][subjectKey] = subject;
+
+              starHour++;
             }
           }
         }

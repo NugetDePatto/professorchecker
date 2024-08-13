@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:checadordeprofesores/normal/utils/responsive_utils.dart';
-import 'package:checadordeprofesores/normal/widgets/app_bar.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+
+import '../../utils/responsive_utils.dart';
+import '../../widgets/app_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

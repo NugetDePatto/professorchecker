@@ -1,10 +1,10 @@
-import 'package:checadordeprofesores/normal/utils/ciclo_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../utils/ciclo_utils.dart';
 import '../utils/date_utils.dart';
 
 class RecorridoControlador {

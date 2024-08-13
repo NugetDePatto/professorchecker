@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -30,12 +31,34 @@ class RecorridoView extends GetView<RecorridoController> {
         ],
       ),
       backgroundColor: ColorsTheme.backgroundColor,
-      body: const Column(
+      body: Column(
         children: [
-          IntervalAdjusterView(),
-          BlocksButtonsView(),
+          const IntervalAdjusterView(),
+          const BlocksButtonsView(),
+          Obx(
+            () => Expanded(
+              child: controller.timetableIsReady.isTrue
+                  ? ListView(
+                      children: [
+                        Text(
+                          controller.timetable.toString(),
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    )
+                  : const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+            ),
+          ),
         ],
       ),
+      floatingActionButton: kDebugMode
+          ? FloatingActionButton(
+              onPressed: controller.test,
+              child: const Icon(Icons.android_rounded),
+            )
+          : null,
     );
   }
 }

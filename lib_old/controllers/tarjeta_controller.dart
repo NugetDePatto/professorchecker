@@ -1,13 +1,13 @@
 import 'dart:io';
-import 'package:checadordeprofesores/normal/utils/ciclo_utils.dart';
-import 'package:checadordeprofesores/normal/utils/secretkey.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:group_button/group_button.dart';
 
+import '../utils/ciclo_utils.dart';
 import '../utils/date_utils.dart';
+import '../utils/secretkey.dart';
 import 'imagen_controller.dart';
 
 class TarjetaController {

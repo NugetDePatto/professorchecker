@@ -1,12 +1,11 @@
 import 'dart:async';
-
-import 'package:checadordeprofesores/normal/utils/responsive_utils.dart';
-import 'package:checadordeprofesores/normal/widgets/app_bar.dart';
-import 'package:checadordeprofesores/normal/widgets/tarjeta_asistencia.dart';
 import 'package:flutter/material.dart';
 import 'package:group_button/group_button.dart';
 import '../../controllers/rerecorrido_controller.dart';
 import '../../utils/date_utils.dart';
+import '../../utils/responsive_utils.dart';
+import '../../widgets/app_bar.dart';
+import '../../widgets/tarjeta_asistencia.dart';
 
 class RecorridoView extends StatefulWidget {
   const RecorridoView({super.key});

@@ -1,7 +1,7 @@
-import 'package:checadordeprofesores/normal/controllers/rerecorrido_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../../controllers/rerecorrido_controller.dart';
 import '../../widgets/app_bar.dart';
 
 class AgendaView extends StatefulWidget {

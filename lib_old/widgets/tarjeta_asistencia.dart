@@ -1,12 +1,12 @@
-import 'package:checadordeprofesores/normal/utils/date_utils.dart';
-import 'package:checadordeprofesores/normal/utils/responsive_utils.dart';
-import 'package:checadordeprofesores/normal/views/Recorrido/vermas_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:group_button/group_button.dart';
 
 import '../controllers/rerecorrido_controller.dart';
 import '../controllers/tarjeta_controller.dart';
+import '../utils/date_utils.dart';
+import '../utils/responsive_utils.dart';
+import '../views/Recorrido/vermas_dialog.dart';
 
 class TarjetaAsistencia extends StatefulWidget {
   final Map<String, dynamic> salon;

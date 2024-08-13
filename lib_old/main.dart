@@ -1,10 +1,11 @@
-import 'package:checadordeprofesores/normal/constants/colors.dart';
-import 'package:checadordeprofesores/normal/constants/routes.dart';
+import 'package:checadordeprofesores/firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import '../firebase_options.dart';
+
+import 'constants/colors.dart';
+import 'constants/routes.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

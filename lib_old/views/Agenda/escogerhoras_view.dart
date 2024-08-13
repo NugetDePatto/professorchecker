@@ -1,9 +1,10 @@
-import 'package:checadordeprofesores/normal/controllers/calendario_controller.dart';
-import 'package:checadordeprofesores/normal/utils/responsive_utils.dart';
-import 'package:checadordeprofesores/normal/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_storage/get_storage.dart';
+
+import '../../controllers/calendario_controller.dart';
+import '../../utils/responsive_utils.dart';
+import '../../widgets/app_bar.dart';
 
 class EscogerHorasView extends StatefulWidget {
   const EscogerHorasView({super.key});
