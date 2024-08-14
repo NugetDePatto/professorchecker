@@ -19,14 +19,14 @@ class IntervalAdjusterView extends GetView<IntervalAdjusterController> {
             icon: const Icon(
               Icons.arrow_back_ios_rounded,
               size: 30,
-              color: ColorsTheme.iconButtonColor,
+              color: ColorsTheme.iconColor,
             ),
           ),
           Obx(
             () => Text(
               controller.currentInterval.value,
               style: const TextStyle(
-                color: ColorsTheme.buttonTextColor,
+                color: ColorsTheme.textColor,
                 fontSize: 20,
               ),
             ),
@@ -36,7 +36,7 @@ class IntervalAdjusterView extends GetView<IntervalAdjusterController> {
             icon: const Icon(
               Icons.arrow_forward_ios_rounded,
               size: 30,
-              color: ColorsTheme.iconButtonColor,
+              color: ColorsTheme.iconColor,
             ),
           ),
         ],

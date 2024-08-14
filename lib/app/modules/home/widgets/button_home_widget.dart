@@ -27,7 +27,7 @@ class ButtonHomeWidget extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: ColorsTheme.buttonBackgroundColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(50),
           ),
         ),
         onPressed: onPressed,
@@ -39,7 +39,7 @@ class ButtonHomeWidget extends StatelessWidget {
               Icon(
                 icon,
                 size: 30,
-                color: ColorsTheme.buttonTextColor,
+                color: ColorsTheme.buttonIconColor,
               ),
               const SizedBox(width: 20),
               Expanded(

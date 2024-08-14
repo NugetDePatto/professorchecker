@@ -17,25 +17,21 @@ class BlockButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          backgroundColor: ColorsTheme.buttonBackgroundColor,
+          backgroundColor: isSelected
+              ? ColorsTheme.blockSelectedColor
+              : ColorsTheme.blockUnselectedColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
-            side: BorderSide(
-              width: 3,
-              color: isSelected
-                  ? ColorsTheme.buttonSelectedColor
-                  : Colors.transparent,
-            ),
           ),
         ),
         onPressed: onPressed,
         child: Text(
           block,
-          style: TextStyleTheme.buttonTextStyle,
+          style: TextStyleTheme.blockTextStyle,
           textAlign: TextAlign.center,
         ),
       ),

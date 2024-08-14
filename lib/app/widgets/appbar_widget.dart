@@ -14,7 +14,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSize {
   });
 
   @override
-  Size get preferredSize => const Size.fromHeight(100);
+  Size get preferredSize => const Size.fromHeight(80);
 
   @override
   Widget get child => throw UnimplementedError();
@@ -28,11 +28,11 @@ class AppBarWidget extends StatelessWidget implements PreferredSize {
       ),
       centerTitle: true,
       backgroundColor: ColorsTheme.backgroundColor,
-      toolbarHeight: 100,
       iconTheme: const IconThemeData(
-        color: ColorsTheme.iconButtonColor,
+        color: ColorsTheme.iconColor,
         size: 30,
       ),
+      toolbarHeight: 80,
       leadingWidth: 70,
       actions: actions,
     );

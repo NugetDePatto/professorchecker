@@ -1,10 +1,10 @@
-import 'package:checadordeprofesores/app/modules/recorrido/views/recorrido_view.dart';
 import 'package:flutter/material.dart';
 import '../views/Agenda/agenda_view.dart';
 import '../views/Agenda/cambiarsalon_view.dart';
 import '../views/Agenda/escogerhoras_view.dart';
 import '../views/Agenda/info_view.dart';
 import '../views/AsistenciaIndividual/asistencia_view.dart';
+import '../views/Recorrido/recorrido_view.dart';
 import '../views/home/home_view.dart';
 import '../views/home/options_view.dart';
 import '../widgets/reporte_view.dart';

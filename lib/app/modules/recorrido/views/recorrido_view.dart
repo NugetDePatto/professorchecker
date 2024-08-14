@@ -24,7 +24,7 @@ class RecorridoView extends GetView<RecorridoController> {
             onPressed: intervalController.setCurrentInterval,
             icon: const Icon(
               Icons.restore,
-              color: ColorsTheme.iconButtonColor,
+              color: ColorsTheme.iconColor,
               size: 30,
             ),
           ),
@@ -36,17 +36,40 @@ class RecorridoView extends GetView<RecorridoController> {
         children: [
           const IntervalAdjusterView(),
           const BlocksButtonsView(),
+          const SizedBox(height: 10),
           Obx(
             () => Expanded(
               child: controller.timetableIsReady.isTrue
                   ? ListView(
                       children: [
-                        for (var classroom in controller.getBlock.entries)
-                          for (var subject in classroom.value.entries)
-                            SubjectCarWidget(
-                              classroom: classroom.key,
-                              subject: subject,
-                            ),
+                        Container(
+                          padding: const EdgeInsets.only(
+                            left: 25,
+                            right: 25,
+                            top: 20,
+                            // bottom: 10,
+                          ),
+                          decoration: const BoxDecoration(
+                            color: ColorsTheme.subjectCardColor,
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                          child: Column(
+                            children: [
+                              for (var classroom in controller.getBlock.entries)
+                                for (var subject in classroom.value.entries)
+                                  SubjectCarWidget(
+                                    classroom: classroom.key,
+                                    subject: subject,
+                                    isLast:
+                                        controller.getBlock.entries.last.key ==
+                                                classroom.key &&
+                                            controller.getBlock.entries.last
+                                                    .value.entries.last.key ==
+                                                subject.key,
+                                  ),
+                            ],
+                          ),
+                        ),
                       ],
                     )
                   : const Center(
