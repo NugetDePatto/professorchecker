@@ -1,22 +1,19 @@
 import 'package:get/get.dart';
+
 import '../../../../core/utlis/print_utils.dart';
 import '../../../../core/utlis/snackbar_util.dart';
+import '../../../../core/utlis/timetable_utils.dart';
 import '../../../data/services/timetable_service.dart';
-import '../widgets/blocks_buttons/blocks_buttons_controller.dart';
-import '../widgets/interval_adjuster/interval_adjuster_controller.dart';
 
 class RecorridoController extends GetxController {
   TimetableService timetableService = TimetableService();
 
   RxBool timetableIsReady = false.obs;
 
-  get interval => Get.find<IntervalAdjusterController>().currentInterval.value;
-
-  get block => Get.find<BlocksButtonsController>().blockSelected.value;
-
   @override
   void onInit() {
     super.onInit();
+    setCurrentInterval();
     getCycleTimetable();
   }
 
@@ -32,12 +29,55 @@ class RecorridoController extends GetxController {
     });
   }
 
-  Map get getBlock => timetableService.getBlock(interval, block);
+  Map get getBlock =>
+      timetableService.getBlock(currentInterval.value, blockSelected.value);
 
-  test() {
-    getBlock.forEach((key, value) {
-      printD(key);
-      // printD(value);
-    });
+  // interval
+
+  RxString currentInterval = ''.obs;
+
+  void setCurrentInterval() {
+    currentInterval.value =
+        '${DateTime.now().hour}:00 - ${DateTime.now().hour + 1}:00';
   }
+
+  void incrementHour() {
+    final hour = (int.parse(currentInterval.value.split(':')[0]) + 1) % 24;
+    currentInterval.value = '$hour:00 - ${hour + 1}:00';
+  }
+
+  void decrementHour() {
+    final hour = (int.parse(currentInterval.value.split(':')[0]) - 1) % 24;
+    currentInterval.value = '$hour:00 - ${hour + 1}:00';
+  }
+
+  //block
+  var blockSelected = 'A'.obs;
+
+  void selectBlock(String block) {
+    blockSelected.value = block;
+  }
+
+  bool isSelected(String block) {
+    return blockSelected.value == block;
+  }
+
+  //subject
+  hasAssistance() {
+    return false;
+  }
+
+  setAssistance(bool option, var info) {
+    String professor = info['titular'];
+    String keySubject = info['clave'];
+    String interval = info['horario'][dayOfWeek];
+
+    String key = '${professor}_${keySubject}_${date}_$interval';
+
+    printD('key: $key');
+    printD('aula: ${info['aula']}');
+    update();
+  }
+
+  test() {}
 }

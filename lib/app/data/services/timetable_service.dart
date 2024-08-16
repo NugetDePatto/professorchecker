@@ -34,6 +34,7 @@ class TimetableService {
         .collection('profesores');
 
     var utilsBox = GetStorage(GetStorageKey.utils);
+    // utilsBox.remove('lastUpdateCache');
     var lastUpdateCache = utilsBox.read('lastUpdateCache');
 
     if (lastUpdateCache == null || timetableHasData == false) {
@@ -45,8 +46,10 @@ class TimetableService {
             )
             .get(fromServer);
 
-        await utilsBox.write('lastUpdateCache',
-            professorsFromServer.docs[0].data()['lastUpdate'].toString());
+        await utilsBox.write(
+            'lastUpdateCache',
+            (professorsFromServer.docs[0].data()['lastUpdate'] as Timestamp)
+                .millisecondsSinceEpoch);
 
         await buildTimetable(professorsFromServer.docs);
 
@@ -59,7 +62,8 @@ class TimetableService {
         var professorsFromServer = await reference
             .where(
               'lastUpdate',
-              isGreaterThan: lastUpdateCache,
+              isGreaterThan:
+                  Timestamp.fromMillisecondsSinceEpoch(lastUpdateCache),
             )
             .get(fromServer);
 
@@ -68,8 +72,10 @@ class TimetableService {
 
           await buildTimetable(professorsFromCache.docs);
 
-          await utilsBox.write('lastUpdateCache',
-              professorsFromServer.docs[0].data()['lastUpdate']);
+          await utilsBox.write(
+              'lastUpdateCache',
+              (professorsFromServer.docs[0].data()['lastUpdate'] as Timestamp)
+                  .millisecondsSinceEpoch);
 
           return 'Calendario actualizado';
         }
@@ -87,10 +93,10 @@ class TimetableService {
 
     for (var professor in professors) {
       for (var subject in professor.data()['materias'].values) {
+        // printD(subject['horario']);
         String classroom = subject['aula'];
         String block = classroom.split('-')[0];
-
-        String subjectKey = '${subject['grupo']}${subject['clave']}';
+        String subjectKey = subject['clave'];
 
         for (int day = 0; day < 7; day++) {
           String interval = subject['horario'][day];

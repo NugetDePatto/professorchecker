@@ -25,7 +25,7 @@ class BlockButtonWidget extends StatelessWidget {
               ? ColorsTheme.blockSelectedColor
               : ColorsTheme.blockUnselectedColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(19),
           ),
         ),
         onPressed: onPressed,

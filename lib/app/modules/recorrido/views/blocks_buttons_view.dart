@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../core/consts/blocks.dart';
-import 'block_button_widget.dart';
-import 'blocks_buttons_controller.dart';
+import '../../../../core/consts/blocks.dart';
+import '../controllers/recorrido_controller.dart';
+import '../widgets/blocks_button/block_button_widget.dart';
 
-class BlocksButtonsView extends GetView<BlocksButtonsController> {
+class BlocksButtonsView extends GetView<RecorridoController> {
   // final ValueChanged<String> onBlockSelected;
   const BlocksButtonsView({super.key});
 

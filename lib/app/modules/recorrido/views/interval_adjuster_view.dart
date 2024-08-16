@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../core/theme/colors_theme.dart';
-import 'interval_adjuster_controller.dart';
+import '../../../../core/theme/colors_theme.dart';
+import '../controllers/recorrido_controller.dart';
+import '../widgets/subject_card/icon_button_widget.dart';
 
-class IntervalAdjusterView extends GetView<IntervalAdjusterController> {
+class IntervalAdjusterView extends GetView {
   const IntervalAdjusterView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<RecorridoController>();
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(
+          IconButtonWidget(
             onPressed: controller.decrementHour,
-            icon: const Icon(
-              Icons.arrow_back_ios_rounded,
-              size: 30,
-              color: ColorsTheme.iconColor,
-            ),
+            icon: Icons.arrow_back_ios_rounded,
+            isSelected: false,
+            color: ColorsTheme.accentColor,
           ),
           Obx(
             () => Text(
@@ -31,13 +31,11 @@ class IntervalAdjusterView extends GetView<IntervalAdjusterController> {
               ),
             ),
           ),
-          IconButton(
+          IconButtonWidget(
             onPressed: controller.incrementHour,
-            icon: const Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 30,
-              color: ColorsTheme.iconColor,
-            ),
+            icon: Icons.arrow_forward_ios_rounded,
+            isSelected: false,
+            color: ColorsTheme.accentColor,
           ),
         ],
       ),

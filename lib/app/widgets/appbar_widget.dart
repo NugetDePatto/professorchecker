@@ -23,7 +23,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSize {
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(
-        title.toUpperCase(),
+        title,
         style: TextStyleTheme.titleTextStyle,
       ),
       centerTitle: true,

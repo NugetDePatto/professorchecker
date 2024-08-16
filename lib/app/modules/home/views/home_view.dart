@@ -13,7 +13,7 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorsTheme.backgroundColor,
-      appBar: const AppBarWidget(title: 'ASIESTENCIA UAT'),
+      appBar: const AppBarWidget(title: 'Asistencia UAT'),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

@@ -7,29 +7,32 @@ class IconButtonWidget extends StatelessWidget {
   final Function() onPressed;
   final bool isSelected;
 
+  final Color color;
+
   const IconButtonWidget({
     super.key,
     required this.icon,
     required this.onPressed,
     required this.isSelected,
+    this.color = ColorsTheme.subjectCardIconUnselected,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isSelected
-              ? ColorsTheme.subjectCardIcon
-              : ColorsTheme.subjectCardIconSelected,
+          color: Colors.transparent,
           width: 1,
         ),
-        color: isSelected ? ColorsTheme.subjectCardIcon : Colors.transparent,
+        color: isSelected ? ColorsTheme.subjectCardIconSelected : color,
       ),
       child: IconButton(
         onPressed: onPressed,
-        color: ColorsTheme.subjectCardIconSelected,
+        color: ColorsTheme.subjectCardIcon,
         iconSize: 25,
         icon: Icon(icon),
       ),

@@ -14,7 +14,10 @@ void main() async {
   /// - lastUpdateCache
   await GetStorage.init(GetStorageKey.utils);
 
-  await GetStorage.init(GetStorageKey.timetable);
+  await GetStorage.init(GetStorageKey.timetable).then((value) {
+    GetStorage box = GetStorage(GetStorageKey.timetable);
+    box.erase();
+  });
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
