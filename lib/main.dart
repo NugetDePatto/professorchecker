@@ -11,12 +11,17 @@ import 'core/consts/getstorage_key.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  /// - lastUpdateCache
-  await GetStorage.init(GetStorageKey.utils);
+  await GetStorage.init(GetStorageKey.utils).then((value) {
+    GetStorage(GetStorageKey.utils).writeIfNull(
+      GetStorageKey.utilsDeviceName,
+      'Tablet 01',
+    );
+  });
 
-  await GetStorage.init(GetStorageKey.timetable).then((value) {
-    GetStorage box = GetStorage(GetStorageKey.timetable);
-    box.erase();
+  await GetStorage.init(GetStorageKey.timetable);
+
+  await GetStorage.init(GetStorageKey.attendance).then((value) {
+    // GetStorage(GetStorageKey.assistance).erase();
   });
 
   await Firebase.initializeApp(

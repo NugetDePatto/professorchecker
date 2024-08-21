@@ -23,4 +23,7 @@ class ColorsTheme {
   static const Color subjectCardIcon = lightColor;
   static const Color subjectCardIconSelected = orangeColor;
   static const Color subjectCardIconUnselected = darkColor;
+
+  static const Color homeButtonColor = accentColor;
+  static const Color homeButtonIcon = orangeColor;
 }

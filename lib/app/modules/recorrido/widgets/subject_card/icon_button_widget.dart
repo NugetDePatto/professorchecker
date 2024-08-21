@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/colors_theme.dart';
+import '../../../../../core/utlis/dispose_util.dart';
 
 class IconButtonWidget extends StatelessWidget {
   final IconData icon;
-  final Function() onPressed;
+  final Function()? onPressed;
   final bool isSelected;
 
   final Color color;
@@ -19,22 +20,27 @@ class IconButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
-      decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.transparent,
-          width: 1,
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor:
+            isSelected ? ColorsTheme.subjectCardIconSelected : color,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(getSize(20)),
         ),
-        color: isSelected ? ColorsTheme.subjectCardIconSelected : color,
+        elevation: 0,
+        shadowColor: Colors.transparent,
       ),
-      child: IconButton(
-        onPressed: onPressed,
-        color: ColorsTheme.subjectCardIcon,
-        iconSize: 25,
-        icon: Icon(icon),
+      onPressed: onPressed,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: getSize(5),
+          vertical: getSize(5),
+        ),
+        child: Icon(
+          icon,
+          size: getSize(30),
+          color: ColorsTheme.subjectCardIcon,
+        ),
       ),
     );
   }

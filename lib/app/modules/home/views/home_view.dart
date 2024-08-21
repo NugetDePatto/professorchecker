@@ -1,3 +1,4 @@
+import 'package:checadordeprofesores/core/utlis/dispose_util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,32 +15,42 @@ class HomeView extends GetView<HomeController> {
     return Scaffold(
       backgroundColor: ColorsTheme.backgroundColor,
       appBar: const AppBarWidget(title: 'Asistencia UAT'),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ButtonHomeWidget(
-            text: 'Recorrido Actual',
-            icon: Icons.directions_walk,
-            onPressed: () {
-              Get.toNamed('/recorrido');
-            },
-          ),
-          ButtonHomeWidget(
-            text: 'Lista de Asistencias',
-            icon: Icons.checklist,
-            onPressed: () {},
-          ),
-          ButtonHomeWidget(
-            text: 'Profesores y Materias',
-            icon: Icons.school,
-            onPressed: () {},
-          ),
-          ButtonHomeWidget(
-            text: 'Subir Imagenes',
-            icon: Icons.image,
-            onPressed: () {},
-          ),
-        ],
+      body: Padding(
+        padding: EdgeInsets.all(getSize(30)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: ColorsTheme.homeButtonColor,
+                borderRadius: BorderRadius.circular(getSize(20)),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ButtonHomeWidget(
+                    text: 'Lista de Asistencia',
+                    icon: Icons.checklist_outlined,
+                    onPressed: () {
+                      Get.toNamed('/recorrido');
+                    },
+                  ),
+                  // ButtonHomeWidget(
+                  //   text: 'Profesores y Materias',
+                  //   icon: Icons.school,
+                  //   onPressed: () {},
+                  // ),
+                  // ButtonHomeWidget(
+                  //   text: 'Subir Imagenes',
+                  //   icon: Icons.image,
+                  //   onPressed: () {},
+                  // ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/colors_theme.dart';
 import '../../../../../core/theme/text_theme.dart';
+import '../../../../../core/utlis/dispose_util.dart';
 
 class BlockButtonWidget extends StatelessWidget {
   final String block;
@@ -16,23 +17,27 @@ class BlockButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          backgroundColor: isSelected
-              ? ColorsTheme.blockSelectedColor
-              : ColorsTheme.blockUnselectedColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(19),
+    return SizedBox(
+      width: getSize(75, sizeTablet: 130),
+      child: Padding(
+        padding:
+            EdgeInsets.symmetric(horizontal: getSize(5), vertical: getSize(10)),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(vertical: getSize(10)),
+            backgroundColor: isSelected
+                ? ColorsTheme.blockSelectedColor
+                : ColorsTheme.blockUnselectedColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(getSize(15)),
+            ),
           ),
-        ),
-        onPressed: onPressed,
-        child: Text(
-          block,
-          style: TextStyleTheme.blockTextStyle,
-          textAlign: TextAlign.center,
+          onPressed: onPressed,
+          child: Text(
+            block,
+            style: TextStyleTheme.blockTextStyle,
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );

@@ -148,7 +148,6 @@ class TarjetaController {
   }
 
   //METODOS PARA TOMAR IMAGEN Y GUARDARLA
-
   addImagenAsistFS() async {
     Map<String, dynamic> valor = {
       codigo: {

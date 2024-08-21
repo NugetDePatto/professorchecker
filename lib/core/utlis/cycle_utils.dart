@@ -4,7 +4,7 @@ String get cycleUtil {
   int mesActual = DateTime.now().month;
 
   if (kDebugMode) {
-    return '2024 - 3 Otoño';
+    return '2024 - 3 Otoño TEST';
   } else if (mesActual >= 1 && mesActual <= 5) {
     return '${DateTime.now().year} - 1 Primavera';
   } else if (mesActual >= 6 && mesActual <= 7) {

@@ -1,3 +1,4 @@
+import 'package:checadordeprofesores/core/utlis/dispose_util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import '../../../../core/theme/colors_theme.dart';
 import '../../../widgets/appbar_widget.dart';
 import '../controllers/recorrido_controller.dart';
 import 'blocks_buttons_view.dart';
+import 'day_adjuster_view.dart';
 import 'interval_adjuster_view.dart';
 import '../widgets/subject_card/subject_card_widget.dart';
 
@@ -19,58 +21,53 @@ class RecorridoView extends GetView<RecorridoController> {
         title: 'Lista de Asistencia',
         actions: [
           IconButton(
-            onPressed: controller.setCurrentInterval,
-            icon: const Icon(
+            onPressed: controller.resetAll,
+            icon: Icon(
               Icons.restore,
               color: ColorsTheme.iconColor,
-              size: 30,
+              size: getSize(30),
             ),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: getSize(10)),
         ],
       ),
       backgroundColor: ColorsTheme.backgroundColor,
       body: Column(
         children: [
+          const DayAdjusterView(),
+          SizedBox(height: getSize(10)),
           const IntervalAdjusterView(),
-          const SizedBox(height: 10),
+          SizedBox(height: getSize(10)),
           const BlocksButtonsView(),
-          const SizedBox(height: 10),
+          SizedBox(height: getSize(10)),
           Obx(
             () => Expanded(
               child: controller.timetableIsReady.isTrue
                   ? controller.getBlock.isNotEmpty
                       ? Container(
                           clipBehavior: Clip.antiAlias,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(
-                              Radius.circular(20),
+                              Radius.circular(getSize(20)),
                             ),
                           ),
                           child: ListView(
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 25,
-                                  vertical: 15,
-                                ),
-                                decoration: const BoxDecoration(
+                                // padding: EdgeInsets.symmetric(
+                                //   horizontal: getSize(25),
+                                //   vertical: getSize(15),
+                                // ),
+                                decoration: BoxDecoration(
                                   color: ColorsTheme.subjectCardColor,
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(20),
+                                    Radius.circular(getSize(20)),
                                   ),
                                 ),
                                 child: Column(
                                   children: [
                                     for (var classroom
                                         in controller.getBlock.entries)
-                                      // Text(
-                                      //   classroom.key,
-                                      //   style: const TextStyle(
-                                      //     color: ColorsTheme.textColor,
-                                      //     fontSize: 20,
-                                      //   ),
-                                      // ),
                                       for (var subject
                                           in classroom.value.entries)
                                         SubjectCardWidget(
@@ -83,12 +80,12 @@ class RecorridoView extends GetView<RecorridoController> {
                             ],
                           ),
                         )
-                      : const Center(
+                      : Center(
                           child: Text(
                             'No hay clases en este horario',
                             style: TextStyle(
                               color: ColorsTheme.textColor,
-                              fontSize: 16,
+                              fontSize: getSize(16),
                             ),
                           ),
                         )

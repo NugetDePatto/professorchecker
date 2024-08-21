@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 
-import '../../../../core/utlis/print_utils.dart';
 import '../../../../core/utlis/snackbar_util.dart';
 import '../../../../core/utlis/timetable_utils.dart';
+import '../../../data/services/attendance_service.dart';
 import '../../../data/services/timetable_service.dart';
 
 class RecorridoController extends GetxController {
@@ -29,8 +29,8 @@ class RecorridoController extends GetxController {
     });
   }
 
-  Map get getBlock =>
-      timetableService.getBlock(currentInterval.value, blockSelected.value);
+  Map get getBlock => timetableService.getBlock(
+      currentInterval.value, blockSelected.value, currentDayIndex.value);
 
   // interval
 
@@ -63,20 +63,50 @@ class RecorridoController extends GetxController {
   }
 
   //subject
-  hasAssistance() {
-    return false;
+  var assistanceMap = <String, bool>{}.obs;
+
+  setAssistance(bool option, var subject) {
+    String professor = subject['titular'];
+    String keySubject = subject['clave'];
+    String interval = subject['horario'][currentDay.value];
+
+    String key = '${professor}_${keySubject}_${currentDate}_$interval';
+
+    AttendanceService().setAttendance(
+      option,
+      professor,
+      keySubject,
+      currentDate,
+      interval,
+    );
+
+    assistanceMap[key] = option;
   }
 
-  setAssistance(bool option, var info) {
-    String professor = info['titular'];
-    String keySubject = info['clave'];
-    String interval = info['horario'][dayOfWeek];
+  //day
 
-    String key = '${professor}_${keySubject}_${date}_$interval';
+  RxString currentDay = dayOfWeekString(dayOfWeek).obs;
 
-    printD('key: $key');
-    printD('aula: ${info['aula']}');
-    update();
+  RxInt currentDayIndex = dayOfWeek.obs;
+
+  void incrementDay() {
+    currentDayIndex.value = (currentDayIndex.value + 1) % 7;
+    currentDay.value = dayOfWeekString(currentDayIndex.value);
+  }
+
+  void decrementDay() {
+    currentDayIndex.value = (currentDayIndex.value - 1) % 7;
+    currentDay.value = dayOfWeekString(currentDayIndex.value);
+  }
+
+  void setCurrentDay() {
+    currentDay.value = dayOfWeekString(dayOfWeek);
+    currentDayIndex.value = dayOfWeek;
+  }
+
+  void resetAll() {
+    setCurrentInterval();
+    setCurrentDay();
   }
 
   test() {}

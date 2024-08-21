@@ -1,5 +1,5 @@
+import 'package:checadordeprofesores/core/utlis/dispose_util.dart';
 import 'package:flutter/material.dart';
-
 import '../../core/theme/colors_theme.dart';
 import '../../core/theme/text_theme.dart';
 
@@ -28,9 +28,9 @@ class AppBarWidget extends StatelessWidget implements PreferredSize {
       ),
       centerTitle: true,
       backgroundColor: ColorsTheme.backgroundColor,
-      iconTheme: const IconThemeData(
+      iconTheme: IconThemeData(
         color: ColorsTheme.iconColor,
-        size: 30,
+        size: getSize(30),
       ),
       toolbarHeight: 80,
       leadingWidth: 70,

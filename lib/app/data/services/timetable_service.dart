@@ -1,4 +1,3 @@
-import 'package:checadordeprofesores/core/utlis/timetable_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -12,11 +11,23 @@ class TimetableService {
 
   get getTimetable => timetableBox.read(cycleUtil);
 
-  Map getBlock(String interval, String block) {
-    var blockMap = getTimetable[dayOfWeek][interval];
+  Map getBlock(String interval, String block, int day) {
+    var blockMap = getTimetable[day][interval];
 
     if (blockMap != null) {
-      return blockMap[block] ?? {};
+      // return blockMap[block] ?? {};
+      if (blockMap[block] != null) {
+        // ordenar por aula
+        Map blockMapSorted = {};
+
+        for (var classroom in blockMap[block].keys.toList()..sort()) {
+          blockMapSorted[classroom] = blockMap[block][classroom];
+        }
+
+        return blockMapSorted;
+      } else {
+        return {};
+      }
     } else {
       return {};
     }
@@ -46,12 +57,11 @@ class TimetableService {
             )
             .get(fromServer);
 
+        await buildTimetable(professorsFromServer.docs);
         await utilsBox.write(
             'lastUpdateCache',
             (professorsFromServer.docs[0].data()['lastUpdate'] as Timestamp)
                 .millisecondsSinceEpoch);
-
-        await buildTimetable(professorsFromServer.docs);
 
         return 'Calendario creado';
       } catch (e) {
@@ -94,8 +104,8 @@ class TimetableService {
     for (var professor in professors) {
       for (var subject in professor.data()['materias'].values) {
         // printD(subject['horario']);
-        String classroom = subject['aula'];
-        String block = classroom.split('-')[0];
+        String classroom = subject['aula'].toString().split('-')[1];
+        String block = subject['aula'].toString().split('-')[0];
         String subjectKey = subject['clave'];
 
         for (int day = 0; day < 7; day++) {

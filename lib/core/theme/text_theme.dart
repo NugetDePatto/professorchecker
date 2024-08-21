@@ -1,29 +1,35 @@
+import 'package:checadordeprofesores/core/utlis/dispose_util.dart';
 import 'package:flutter/material.dart';
 
 import 'colors_theme.dart';
 
 class TextStyleTheme {
-  static const TextStyle titleTextStyle = TextStyle(
-    fontSize: 20,
+  static TextStyle titleTextStyle = TextStyle(
+    fontSize: getSize(20),
     color: ColorsTheme.textColor,
     fontWeight: FontWeight.bold,
   );
 
-  static const TextStyle buttonTextStyle = TextStyle(
-    fontSize: 20,
-    color: ColorsTheme.buttonTextColor,
+  static TextStyle buttonTextStyle = TextStyle(
+    fontSize: getSize(20),
+    color: ColorsTheme.lightColor,
     fontWeight: FontWeight.bold,
   );
 
-  static const TextStyle blockTextStyle = TextStyle(
-    fontSize: 16,
+  static TextStyle blockTextStyle = TextStyle(
+    fontSize: getSize(16),
     color: ColorsTheme.textColor,
     fontWeight: FontWeight.bold,
   );
 
-  static const TextStyle subjectTextStyle = TextStyle(
-    fontSize: 16,
+  static TextStyle subjectTextStyle = TextStyle(
+    fontSize: getSize(16),
     color: ColorsTheme.textColor,
     fontWeight: FontWeight.bold,
+  );
+
+  static TextStyle subtitleTextStyle = TextStyle(
+    fontSize: getSize(14),
+    color: ColorsTheme.textColor,
   );
 }
