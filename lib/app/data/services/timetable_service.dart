@@ -1,10 +1,11 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../../../core/consts/getstorage_key.dart';
 import '../../../core/utlis/cycle_utils.dart';
 import '../../../core/utlis/is_conected_internet_utils.dart';
-import '../../../core/utlis/print_utils.dart';
 
 class TimetableService {
   var timetableBox = GetStorage(GetStorageKey.timetable);
@@ -45,7 +46,6 @@ class TimetableService {
         .collection('profesores');
 
     var utilsBox = GetStorage(GetStorageKey.utils);
-    // utilsBox.remove('lastUpdateCache');
     var lastUpdateCache = utilsBox.read('lastUpdateCache');
 
     if (lastUpdateCache == null || timetableHasData == false) {
@@ -67,34 +67,28 @@ class TimetableService {
       } catch (e) {
         return 'No se pudo crear el horario, revisa tu conexión a internet';
       }
-    } else if (await isConectedInternet()) {
-      try {
-        var professorsFromServer = await reference
-            .where(
-              'lastUpdate',
-              isGreaterThan:
-                  Timestamp.fromMillisecondsSinceEpoch(lastUpdateCache),
-            )
-            .get(fromServer);
+    } else if (await isConnectedToInternet()) {
+      var professorsFromServer = await reference
+          .where(
+            'lastUpdate',
+            isGreaterThan:
+                Timestamp.fromMillisecondsSinceEpoch(lastUpdateCache),
+          )
+          .get(fromServer);
 
-        if (professorsFromServer.docs.isNotEmpty) {
-          var professorsFromCache = await reference.get(fromCache);
+      if (professorsFromServer.docs.isNotEmpty) {
+        var professorsFromCache = await reference.get(fromCache);
 
-          await buildTimetable(professorsFromCache.docs);
+        await buildTimetable(professorsFromCache.docs);
 
-          await utilsBox.write(
-              'lastUpdateCache',
-              (professorsFromServer.docs[0].data()['lastUpdate'] as Timestamp)
-                  .millisecondsSinceEpoch);
+        await utilsBox.write(
+            'lastUpdateCache',
+            (professorsFromServer.docs[0].data()['lastUpdate'] as Timestamp)
+                .millisecondsSinceEpoch);
 
-          return 'Calendario actualizado';
-        }
-      } catch (e) {
-        printD(e);
-        return 'No se pudo actualizar el horario, revisa tu conexión a internet o intenta más tarde';
+        return 'Calendario actualizado';
       }
     }
-
     return 'No hay cambios en el horario';
   }
 
