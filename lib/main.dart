@@ -6,22 +6,22 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import 'app/routes/app_pages.dart';
-import 'core/consts/getstorage_key.dart';
+import 'core/consts/app_keys.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await GetStorage.init(GetStorageKey.utils).then((value) {
-    GetStorage(GetStorageKey.utils).writeIfNull(
-      GetStorageKey.utilsDeviceName,
+  await GetStorage.init(AppKeys.utils).then((value) {
+    GetStorage(AppKeys.utils).writeIfNull(
+      AppKeys.utilsDeviceName,
       'Tablet 01',
     );
   });
 
-  await GetStorage.init(GetStorageKey.timetable);
+  await GetStorage.init(AppKeys.timetable);
 
-  await GetStorage.init(GetStorageKey.attendance).then((value) {
-    // GetStorage(GetStorageKey.assistance).erase();
+  await GetStorage.init(AppKeys.attendance).then((value) {
+    // GetStorage(AppKeys.assistance).erase();
   });
 
   await Firebase.initializeApp(

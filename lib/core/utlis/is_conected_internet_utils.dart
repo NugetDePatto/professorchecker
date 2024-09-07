@@ -9,7 +9,7 @@ Future<bool> isConnectedToInternet() async {
     try {
       final response =
           await http.get(Uri.parse('https://www.google.com')).timeout(
-        const Duration(seconds: 5),
+        const Duration(seconds: 3),
         onTimeout: () {
           // Add a return statement here
           return http.Response('Error', 408);

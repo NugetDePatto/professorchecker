@@ -8,5 +8,6 @@ void snackbarUtil(String mensaje) {
     snackPosition: SnackPosition.BOTTOM,
     colorText: Colors.white,
     backgroundColor: Colors.grey[900],
+    duration: const Duration(milliseconds: 1500),
   );
 }

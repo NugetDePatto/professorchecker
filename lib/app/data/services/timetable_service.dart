@@ -3,101 +3,99 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_storage/get_storage.dart';
 
-import '../../../core/consts/getstorage_key.dart';
+import '../../../core/consts/app_strings.dart';
+import '../../../core/consts/app_keys.dart';
 import '../../../core/utlis/cycle_utils.dart';
 import '../../../core/utlis/is_conected_internet_utils.dart';
+import '../../../core/utlis/update_cache_utill.dart';
+import 'firestore_service.dart';
 
 class TimetableService {
-  var timetableBox = GetStorage(GetStorageKey.timetable);
+  FirestoreService firestoreService = FirestoreService();
 
-  get getTimetable => timetableBox.read(cycleUtil);
+  final _timetableBox = GetStorage(AppKeys.timetable);
+
+  get getTimetable => _timetableBox.read(cycleUtil);
 
   Map getBlock(String interval, String block, int day) {
-    var blockMap = getTimetable[day][interval];
+    var blockMap = getTimetable[day][interval] ?? {};
 
-    if (blockMap != null) {
-      // return blockMap[block] ?? {};
-      if (blockMap[block] != null) {
-        // ordenar por aula
-        Map blockMapSorted = {};
+    return _sortBlock(blockMap[block] ?? {});
+  }
 
-        for (var classroom in blockMap[block].keys.toList()..sort()) {
-          blockMapSorted[classroom] = blockMap[block][classroom];
-        }
+  Map _sortBlock(Map blockMap) {
+    Map blockMapSorted = {};
 
-        return blockMapSorted;
-      } else {
-        return {};
-      }
-    } else {
-      return {};
+    for (var classroom in blockMap.keys.toList()..sort()) {
+      blockMapSorted[classroom] = blockMap[classroom];
     }
+
+    return blockMapSorted;
   }
 
   Future<String> updateProfessorsTimetable() async {
-    GetOptions fromCache = const GetOptions(source: Source.cache);
-    GetOptions fromServer = const GetOptions(source: Source.server);
+    bool timetableHasData = _timetableBox.hasData(cycleUtil);
 
-    bool timetableHasData = timetableBox.hasData(cycleUtil);
+    var lastUpdateCache = UpdateCacheUtill().getLastUpdateCache();
 
-    var reference = FirebaseFirestore.instance
-        .collection('ciclos')
-        .doc(cycleUtil)
-        .collection('profesores');
-
-    var utilsBox = GetStorage(GetStorageKey.utils);
-    var lastUpdateCache = utilsBox.read('lastUpdateCache');
-
-    if (lastUpdateCache == null || timetableHasData == false) {
-      try {
-        var professorsFromServer = await reference
-            .orderBy(
-              'lastUpdate',
-              descending: true,
-            )
-            .get(fromServer);
-
-        await buildTimetable(professorsFromServer.docs);
-        await utilsBox.write(
-            'lastUpdateCache',
-            (professorsFromServer.docs[0].data()['lastUpdate'] as Timestamp)
-                .millisecondsSinceEpoch);
-
-        return 'Calendario creado';
-      } catch (e) {
-        return 'No se pudo crear el horario, revisa tu conexión a internet';
+    if (await isConnectedToInternet()) {
+      if (lastUpdateCache == null || timetableHasData == false) {
+        return await _createNewTimetable();
+      } else {
+        return await _updateTimetableIfNeeded(lastUpdateCache);
       }
-    } else if (await isConnectedToInternet()) {
-      var professorsFromServer = await reference
-          .where(
-            'lastUpdate',
-            isGreaterThan:
-                Timestamp.fromMillisecondsSinceEpoch(lastUpdateCache),
-          )
-          .get(fromServer);
-
-      if (professorsFromServer.docs.isNotEmpty) {
-        var professorsFromCache = await reference.get(fromCache);
-
-        await buildTimetable(professorsFromCache.docs);
-
-        await utilsBox.write(
-            'lastUpdateCache',
-            (professorsFromServer.docs[0].data()['lastUpdate'] as Timestamp)
-                .millisecondsSinceEpoch);
-
-        return 'Calendario actualizado';
-      }
+    } else {
+      return AppStrings.noInternetConnection;
     }
-    return 'No hay cambios en el horario';
   }
 
-  buildTimetable(professors) async {
+  Future<String> _createNewTimetable() async {
+    var professorsFromServer = await firestoreService
+        .getProfessorsReference()
+        .orderBy(
+          AppKeys.utilsUpdateCache,
+          descending: true,
+        )
+        .get(firestoreService.fromServer);
+
+    await _buildTimetable(professorsFromServer.docs);
+
+    await UpdateCacheUtill().saveLastUpdateCache(
+        professorsFromServer.docs[0].data()[AppKeys.utilsUpdateCache]);
+
+    return AppStrings.timetableCreated;
+  }
+
+  Future<String> _updateTimetableIfNeeded(lastUpdateCache) async {
+    var professorsFromServer = await firestoreService
+        .getProfessorsReference()
+        .where(
+          AppKeys.utilsUpdateCache,
+          isGreaterThan: Timestamp.fromMillisecondsSinceEpoch(lastUpdateCache),
+        )
+        .get(FirestoreService().fromServer);
+
+    if (professorsFromServer.docs.isNotEmpty) {
+      var professorsFromCache = await firestoreService
+          .getProfessorsReference()
+          .get(FirestoreService().fromCache);
+
+      await _buildTimetable(professorsFromCache.docs);
+
+      await UpdateCacheUtill().saveLastUpdateCache(
+          professorsFromServer.docs[0].data()[AppKeys.utilsUpdateCache]);
+
+      return AppStrings.timetableUpdated;
+    } else {
+      return AppStrings.noUpdates;
+    }
+  }
+
+  _buildTimetable(professors) async {
     List<Map<String, dynamic>> timetable = [{}, {}, {}, {}, {}, {}, {}];
 
     for (var professor in professors) {
       for (var subject in professor.data()['materias'].values) {
-        // printD(subject['horario']);
         String classroom = subject['aula'].toString().split('-')[1];
         String block = subject['aula'].toString().split('-')[0];
         String subjectKey = subject['clave'];
@@ -105,33 +103,18 @@ class TimetableService {
         for (int day = 0; day < 7; day++) {
           String interval = subject['horario'][day];
           if (interval.contains(':')) {
-            int starHour = int.parse(interval.split(':')[0]);
-            int endHour = int.parse(interval.split('-')[1].split(':')[0]);
-            while (starHour < endHour) {
-              interval = '$starHour:00 - ${starHour + 1}:00';
-
-              timetable[day].putIfAbsent(interval, () => {});
-              timetable[day][interval].putIfAbsent(block, () => {});
-              timetable[day][interval][block].putIfAbsent(classroom, () => {});
-              timetable[day][interval][block][classroom][subjectKey] = subject;
-
-              starHour++;
-            }
+            _addInterval(timetable, day, interval, block, classroom, subjectKey,
+                subject);
           }
         }
       }
     }
 
-    await timetableBox.write(cycleUtil, timetable);
+    await _timetableBox.write(cycleUtil, timetable);
   }
 
-  void addInterval(
-      int day, var subject, String interval, String classroom) async {
-    List<dynamic> timetable = timetableBox.read(cycleUtil);
-
-    var block = classroom.split('-')[0];
-    var subjectKey = subject['grupo'] + subject['clave'];
-
+  void _addInterval(var timetable, int day, String interval, String block,
+      String classroom, String subjectKey, var subject) {
     int starHour = int.parse(interval.split(':')[0]);
     int endHour = int.parse(interval.split('-')[1].split(':')[0]);
 
@@ -141,29 +124,8 @@ class TimetableService {
       timetable[day][interval].putIfAbsent(block, () => {});
       timetable[day][interval][block].putIfAbsent(classroom, () => {});
       timetable[day][interval][block][classroom][subjectKey] = subject;
+
+      starHour++;
     }
-
-    await timetableBox.write(cycleUtil, timetable);
-  }
-
-  void removeInterval(
-      int day, var subject, String interval, String classroom) async {
-    List<dynamic> timetable = timetableBox.read(cycleUtil);
-
-    var block = classroom.split('-')[0];
-    var subjectKey = subject['grupo'] + subject['clave'];
-
-    int starHour = int.parse(interval.split(':')[0]);
-    int endHour = int.parse(interval.split('-')[1].split(':')[0]);
-
-    while (starHour < endHour) {
-      interval = '$starHour:00 - ${starHour + 1}:00';
-      timetable[day].putIfAbsent(interval, () => {});
-      timetable[day][interval].putIfAbsent(block, () => {});
-      timetable[day][interval][block].putIfAbsent(classroom, () => {});
-      timetable[day][interval][block][classroom][subjectKey] = subject;
-    }
-
-    await timetableBox.write(cycleUtil, timetable);
   }
 }

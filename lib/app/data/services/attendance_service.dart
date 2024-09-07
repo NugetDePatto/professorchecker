@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_storage/get_storage.dart';
 
-import '../../../core/consts/getstorage_key.dart';
+import '../../../core/consts/app_keys.dart';
 import '../../../core/utlis/cycle_utils.dart';
 import '../../../core/utlis/timetable_utils.dart';
 
 class AttendanceService {
-  GetStorage attendanceBox = GetStorage(GetStorageKey.attendance);
+  GetStorage attendanceBox = GetStorage(AppKeys.attendance);
 
   setAttendance(
     bool option,
@@ -31,7 +31,7 @@ class AttendanceService {
         .doc(key);
 
     Map<String, dynamic> attendanceFirebase = {
-      GetStorage(GetStorageKey.utils).read(GetStorageKey.utilsDeviceName): {
+      GetStorage(AppKeys.utils).read(AppKeys.utilsDeviceName): {
         'hasAttendance': option,
         'time': currentTime,
         'image': attendance['image'],
