@@ -4,11 +4,11 @@ import 'package:get_storage/get_storage.dart';
 import '../consts/app_keys.dart';
 
 class UpdateCacheUtill {
-  UpdateCacheUtill._internal();
+  // UpdateCacheUtill._internal();
 
-  static final UpdateCacheUtill _instance = UpdateCacheUtill._internal();
+  // static final UpdateCacheUtill _instance = UpdateCacheUtill._internal();
 
-  factory UpdateCacheUtill() => _instance;
+  // factory UpdateCacheUtill() => _instance;
 
   final _utilsBox = GetStorage(AppKeys.utils);
 
@@ -16,5 +16,5 @@ class UpdateCacheUtill {
       AppKeys.utilsUpdateCache,
       (timestamp as Timestamp).millisecondsSinceEpoch);
 
-  String? getLastUpdateCache() => _utilsBox.read(AppKeys.utilsUpdateCache);
+  getLastUpdateCache() => _utilsBox.read(AppKeys.utilsUpdateCache);
 }

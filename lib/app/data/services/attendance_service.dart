@@ -19,7 +19,7 @@ class AttendanceService {
 
     var attendance = await getAttendance(key);
 
-    attendance['hasAttendance'] = option;
+    attendance['hasAssistance'] = option;
     attendance['time'] = currentTime;
 
     await attendanceBox.write(key, attendance);
@@ -32,7 +32,7 @@ class AttendanceService {
 
     Map<String, dynamic> attendanceFirebase = {
       GetStorage(AppKeys.utils).read(AppKeys.utilsDeviceName): {
-        'hasAttendance': option,
+        'hasAssistance': option,
         'time': currentTime,
         'image': attendance['image'],
         'timeServer': FieldValue.serverTimestamp(),
@@ -48,7 +48,7 @@ class AttendanceService {
 
   getAttendance(String key) async {
     Map<String, dynamic> attendance = {
-      'hasAttendance': null,
+      'hasAssistance': null,
       'time': '',
       'image': ''
     };
@@ -71,6 +71,6 @@ class AttendanceService {
       '${professor}_${keySubject}_${currentDate}_$interval',
     );
 
-    return attendance != null ? attendance['hasAttendance'] : null;
+    return attendance != null ? attendance['hasAssistance'] : null;
   }
 }

@@ -20,9 +20,7 @@ void main() async {
 
   await GetStorage.init(AppKeys.timetable);
 
-  await GetStorage.init(AppKeys.attendance).then((value) {
-    // GetStorage(AppKeys.assistance).erase();
-  });
+  await GetStorage.init(AppKeys.attendance);
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
