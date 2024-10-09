@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 
 import '../../../../core/utlis/snackbar_util.dart';
 import '../../../../core/utlis/timetable_utils.dart';
-import '../../../data/services/attendance_service.dart';
+// import '../../../data/services/attendance_service.dart';
 import '../../../data/services/timetable_service.dart';
 
 class RecorridoController extends GetxController {
@@ -62,27 +62,6 @@ class RecorridoController extends GetxController {
     return blockSelected.value == block;
   }
 
-  //subject
-  var assistanceMap = <String, bool>{}.obs;
-
-  setAssistance(bool option, var subject) {
-    String professor = subject['titular'];
-    String keySubject = subject['clave'];
-    String interval = subject['horario'][currentDay.value];
-
-    String key = '${professor}_${keySubject}_${currentDate}_$interval';
-
-    AttendanceService().setAttendance(
-      option,
-      professor,
-      keySubject,
-      currentDate,
-      interval,
-    );
-
-    assistanceMap[key] = option;
-  }
-
   //day
 
   RxString currentDay = dayOfWeekString(dayOfWeek).obs;
@@ -103,6 +82,8 @@ class RecorridoController extends GetxController {
     currentDay.value = dayOfWeekString(dayOfWeek);
     currentDayIndex.value = dayOfWeek;
   }
+
+  int get getCurrentDay => currentDayIndex.value;
 
   void resetAll() {
     setCurrentInterval();

@@ -1,9 +1,9 @@
-import 'package:checadordeprofesores/core/utlis/dispose_util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/theme/colors_theme.dart';
+import '../../../../core/utlis/dispose_util.dart';
 import '../../../widgets/appbar_widget.dart';
 import '../controllers/recorrido_controller.dart';
 import 'blocks_buttons_view.dart';
@@ -34,9 +34,13 @@ class RecorridoView extends GetView<RecorridoController> {
       backgroundColor: ColorsTheme.backgroundColor,
       body: Column(
         children: [
-          const DayAdjusterView(),
-          SizedBox(height: getSize(10)),
-          const IntervalAdjusterView(),
+          Wrap(
+            children: [
+              const DayAdjusterView(),
+              SizedBox(height: getSize(10)),
+              const IntervalAdjusterView(),
+            ],
+          ),
           SizedBox(height: getSize(10)),
           const BlocksButtonsView(),
           SizedBox(height: getSize(10)),
@@ -54,10 +58,6 @@ class RecorridoView extends GetView<RecorridoController> {
                           child: ListView(
                             children: [
                               Container(
-                                // padding: EdgeInsets.symmetric(
-                                //   horizontal: getSize(25),
-                                //   vertical: getSize(15),
-                                // ),
                                 decoration: BoxDecoration(
                                   color: ColorsTheme.subjectCardColor,
                                   borderRadius: BorderRadius.all(

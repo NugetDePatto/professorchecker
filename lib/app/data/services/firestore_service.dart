@@ -1,5 +1,6 @@
-import 'package:checadordeprofesores/core/utlis/cycle_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../../../core/utlis/cycle_utils.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

@@ -13,7 +13,7 @@ import 'firestore_service.dart';
 class TimetableService {
   FirestoreService firestoreService = FirestoreService();
 
-  final _timetableBox = GetStorage(AppKeys.timetable);
+  final _timetableBox = GetStorage(AppKeys.TIMETABLE);
 
   get getTimetable => _timetableBox.read(cycleUtil);
 
@@ -45,7 +45,7 @@ class TimetableService {
         return await _updateTimetableIfNeeded(lastUpdateCache);
       }
     } else {
-      return AppStrings.noInternetConnection;
+      return AppStrings.NO_INTERNET_CONNECTION;
     }
   }
 
@@ -53,7 +53,7 @@ class TimetableService {
     var professorsFromServer = await firestoreService
         .getProfessorsReference()
         .orderBy(
-          AppKeys.utilsUpdateCache,
+          AppKeys.UTIL_UPDATE_CACHE,
           descending: true,
         )
         .get(firestoreService.fromServer);
@@ -61,16 +61,16 @@ class TimetableService {
     await _buildTimetable(professorsFromServer.docs);
 
     await UpdateCacheUtill().saveLastUpdateCache(
-        professorsFromServer.docs[0].data()[AppKeys.utilsUpdateCache]);
+        professorsFromServer.docs[0].data()[AppKeys.UTIL_UPDATE_CACHE]);
 
-    return AppStrings.timetableCreated;
+    return AppStrings.TIMETABLE_CREATED;
   }
 
   Future<String> _updateTimetableIfNeeded(lastUpdateCache) async {
     var professorsFromServer = await firestoreService
         .getProfessorsReference()
         .where(
-          AppKeys.utilsUpdateCache,
+          AppKeys.UTIL_UPDATE_CACHE,
           isGreaterThan: Timestamp.fromMillisecondsSinceEpoch(lastUpdateCache),
         )
         .get(FirestoreService().fromServer);
@@ -83,11 +83,11 @@ class TimetableService {
       await _buildTimetable(professorsFromCache.docs);
 
       await UpdateCacheUtill().saveLastUpdateCache(
-          professorsFromServer.docs[0].data()[AppKeys.utilsUpdateCache]);
+          professorsFromServer.docs[0].data()[AppKeys.UTIL_UPDATE_CACHE]);
 
-      return AppStrings.timetableUpdated;
+      return AppStrings.TIMETABLE_UPDATED;
     } else {
-      return AppStrings.noUpdates;
+      return AppStrings.NO_UPDATES;
     }
   }
 

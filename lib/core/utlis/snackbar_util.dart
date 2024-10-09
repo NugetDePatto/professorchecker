@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-void snackbarUtil(String mensaje) {
+void snackbarUtil(String mensaje, {String? title}) {
   Get.snackbar(
-    'Lista de asistencias',
+    title ?? 'Lista de asistencia',
     mensaje,
     snackPosition: SnackPosition.BOTTOM,
     colorText: Colors.white,

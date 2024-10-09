@@ -22,5 +22,15 @@ class AppPages {
       page: () => const RecorridoView(),
       binding: RecorridoBinding(),
     ),
+    GetPage(
+      name: _Paths.PROFESSOR_REPORTS,
+      page: () => const RecorridoView(),
+      binding: RecorridoBinding(),
+    ),
+    // GetPage(
+    //   name: _Paths.CLASSROOMS_REPORTS,
+    //   page: () => const RecorridoView(),
+    //   binding: RecorridoBinding(),
+    // ),
   ];
 }

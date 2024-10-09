@@ -1,34 +1,43 @@
+import 'package:checadordeprofesores/app/routes/app_pages.dart';
 import 'package:get/get.dart';
-
+import '../../../../../core/utlis/snackbar_util.dart';
 import '../../../../../core/utlis/timetable_utils.dart';
 import '../../../../data/services/attendance_service.dart';
+import '../../controllers/recorrido_controller.dart';
+import '../../views/more_info_dialog.dart';
 
 class SubjectCardController extends GetxController {
-  var close = false.obs;
-  var check = false.obs;
+  final dynamic subject;
 
-  var isFirstTime = true;
+  SubjectCardController(this.subject);
 
-  getAssistance(var subject, int day) {
-    bool? hasAssistance = AttendanceService().hasAttendance(
+  final recorridoController = Get.find<RecorridoController>();
+
+  final attendanceService = AttendanceService();
+
+  //un rxbool que pueda ser nulo
+  var check = RxnBool(null);
+
+  var hasPicture = false.obs;
+
+  bool? getAttendance(bool type) {
+    int day = recorridoController.currentDayIndex.value;
+
+    check.value = AttendanceService().hasAttendance(
       subject['titular'],
       subject['clave'],
       currentDate,
       subject['horario'][day],
     );
 
-    if (hasAssistance != null) {
-      if (hasAssistance) {
-        check.value = true;
-        close.value = false;
-      } else {
-        check.value = false;
-        close.value = true;
-      }
+    if (check.value != null) {
+      return check.value == type;
     }
+    return null;
   }
 
-  setAssistance(bool option, var subject, int day) async {
+  Future<void> setAttendance(bool option) async {
+    int day = recorridoController.currentDayIndex.value;
     String professor = subject['titular'];
     String keySubject = subject['clave'];
     String interval = subject['horario'][day];
@@ -41,12 +50,57 @@ class SubjectCardController extends GetxController {
       interval,
     );
 
-    if (option) {
-      check.value = true;
-      close.value = false;
+    check.value = option;
+  }
+
+  moreInfoButton() {
+    moreInfoDialog(subject, recorridoController.getCurrentDay);
+  }
+
+  takeAPictureButton() {
+    if (getAttendance(true) != null) {
+      attendanceService
+          .setPicture(
+        subject['titular'],
+        subject['clave'],
+        currentDate,
+        subject['horario'][recorridoController.currentDayIndex.value],
+      )
+          .then(
+        (value) {
+          hasPicture.value = true;
+        },
+      );
     } else {
-      check.value = false;
-      close.value = true;
+      snackbarUtil('No puedes tomar una foto si no has marcado asistencia');
+    }
+  }
+
+  bool getHasPicture() {
+    hasPicture.value = attendanceService.hasPicture(
+      subject['titular'],
+      subject['clave'],
+      currentDate,
+      subject['horario'][recorridoController.currentDayIndex.value],
+    );
+
+    return hasPicture.value;
+  }
+
+  reportButton() {
+    bool type = true;
+
+    if (type) {
+      Get.toNamed(
+        Routes.PROFESSOR_REPORTS,
+        arguments: {
+          'professor': subject['titular'],
+          'subject': subject['clave'],
+          'date': currentDate,
+          'interval': subject['horario']
+              [recorridoController.currentDayIndex.value],
+        },
+      );
     }
   }
 }

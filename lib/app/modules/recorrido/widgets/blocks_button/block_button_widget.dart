@@ -21,7 +21,7 @@ class BlockButtonWidget extends StatelessWidget {
       width: getSize(75, sizeTablet: 130),
       child: Padding(
         padding:
-            EdgeInsets.symmetric(horizontal: getSize(5), vertical: getSize(10)),
+            EdgeInsets.symmetric(horizontal: getSize(5), vertical: getSize(1)),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(vertical: getSize(10)),

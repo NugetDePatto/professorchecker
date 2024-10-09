@@ -10,11 +10,11 @@ class UpdateCacheUtill {
 
   // factory UpdateCacheUtill() => _instance;
 
-  final _utilsBox = GetStorage(AppKeys.utils);
+  final _utilsBox = GetStorage(AppKeys.UTILS);
 
   Future<void> saveLastUpdateCache(timestamp) async => await _utilsBox.write(
-      AppKeys.utilsUpdateCache,
+      AppKeys.UTIL_UPDATE_CACHE,
       (timestamp as Timestamp).millisecondsSinceEpoch);
 
-  getLastUpdateCache() => _utilsBox.read(AppKeys.utilsUpdateCache);
+  getLastUpdateCache() => _utilsBox.read(AppKeys.UTIL_UPDATE_CACHE);
 }

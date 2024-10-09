@@ -1,8 +1,12 @@
-class AppKeys {
-  static const String utils = 'utils';
-  static const String utilsUpdateCache = 'lastUpdate';
-  static const String utilsDeviceName = 'deviceName';
+// ignore_for_file: constant_identifier_names
 
-  static const String timetable = 'timetable';
-  static const String attendance = 'attendance';
+class AppKeys {
+  static const String UTILS = 'utils';
+  static const String UTIL_UPDATE_CACHE = 'lastUpdate';
+  static const String UTIL_DEVICE_NAME = 'deviceName';
+  static const String UTIL_EXTERNAL_DIRECTORY = 'externalDirectory';
+
+  static const String TIMETABLE = 'timetable';
+  static const String ATTENDANCE = 'attendance';
+  static const String ATTENDANCE_IMAGE = 'attendanceImage';
 }
