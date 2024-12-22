@@ -1,3 +1,6 @@
+import 'package:checadordeprofesores/app/modules/reports/bindings/reports_binding.dart';
+import 'package:checadordeprofesores/app/modules/reports/views/classroom_reports_view.dart';
+import 'package:checadordeprofesores/app/modules/reports/views/professors_reports_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/home/bindings/home_binding.dart';
@@ -24,13 +27,13 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.PROFESSOR_REPORTS,
-      page: () => const RecorridoView(),
-      binding: RecorridoBinding(),
+      page: () => const ProfessorsReportsView(),
+      binding: ReportsBinding(),
     ),
-    // GetPage(
-    //   name: _Paths.CLASSROOMS_REPORTS,
-    //   page: () => const RecorridoView(),
-    //   binding: RecorridoBinding(),
-    // ),
+    GetPage(
+      name: _Paths.CLASSROOMS_REPORTS,
+      page: () => const ClassroomReportsView(),
+      binding: ReportsBinding(),
+    ),
   ];
 }

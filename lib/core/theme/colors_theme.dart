@@ -26,4 +26,8 @@ class ColorsTheme {
 
   static const Color homeButtonColor = accentColor;
   static const Color homeButtonIcon = orangeColor;
+
+  static const Color textFieldColor = blueColor;
+  static const Color texFieldBackgroundColor = accentColor;
+  static const Color textFieldTextColor = lightColor;
 }

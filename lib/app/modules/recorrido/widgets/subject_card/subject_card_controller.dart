@@ -1,4 +1,4 @@
-import 'package:checadordeprofesores/app/routes/app_pages.dart';
+import 'package:checadordeprofesores/app/modules/reports/widgets/report_dialog.dart';
 import 'package:get/get.dart';
 import '../../../../../core/utlis/snackbar_util.dart';
 import '../../../../../core/utlis/timetable_utils.dart';
@@ -15,7 +15,6 @@ class SubjectCardController extends GetxController {
 
   final attendanceService = AttendanceService();
 
-  //un rxbool que pueda ser nulo
   var check = RxnBool(null);
 
   var hasPicture = false.obs;
@@ -88,19 +87,15 @@ class SubjectCardController extends GetxController {
   }
 
   reportButton() {
-    bool type = true;
-
-    if (type) {
-      Get.toNamed(
-        Routes.PROFESSOR_REPORTS,
-        arguments: {
-          'professor': subject['titular'],
-          'subject': subject['clave'],
-          'date': currentDate,
-          'interval': subject['horario']
-              [recorridoController.currentDayIndex.value],
-        },
-      );
-    }
+    reportDialog(
+      {
+        'professor': subject['titular'],
+        'subject_key': subject['clave'],
+        'subject_name': subject['materia'],
+        'date': currentDate,
+        'interval': subject['horario']
+            [recorridoController.currentDayIndex.value],
+      },
+    );
   }
 }

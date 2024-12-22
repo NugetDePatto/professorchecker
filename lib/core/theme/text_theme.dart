@@ -5,7 +5,7 @@ import 'colors_theme.dart';
 
 class TextStyleTheme {
   static TextStyle titleTextStyle = TextStyle(
-    fontSize: getSize(20),
+    fontSize: getSize(25),
     color: ColorsTheme.textColor,
     fontWeight: FontWeight.bold,
   );
